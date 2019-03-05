@@ -1,0 +1,24 @@
+{
+    "modifications": {
+        "replaceFile": [
+            {
+                "path": "config/",
+                "name": "dependencias.json"
+            }
+        ],
+        "patchJson": [
+            {
+                "path": "config/",
+                "name": "urls.json"
+            },
+            {
+                "path": "config/",
+                "name": "registros.json"
+            }
+        ],
+        "deleteFile": [],
+        "patchScript": [],
+        "addFile": []
+    },
+    "name": "elganso_idl"
+}
