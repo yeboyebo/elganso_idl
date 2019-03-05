@@ -1,3 +1,21 @@
 {
-    "modifications": []
+    "modifications": [
+        {
+            "type": "insertAfterNode",
+            "path": "/flfact_tpv/tpv_vales",
+            "value": {
+                "tpv_viajesmultitransstock": {
+                    "form": "tpv_masterviajesmultitransstock",
+                    "formRecord": "tpv_viajesmultitransstock"
+                }
+            }
+        },
+        {
+            "type": "insertAfterNode",
+            "path": "/flfact_tpv/tpv_viajesmultitransstock",
+            "value": {
+                "tpv_lineasmultitransstock": null
+            }
+        }
+    ]
 }

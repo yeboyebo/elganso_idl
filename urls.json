@@ -1,3 +1,39 @@
 {
-    "modifications": []
+    "modifications": [
+        {
+            "type": "insertAfterNode",
+            "path": "/models/flfact_tpv/tpv_vales",
+            "value": {
+                "tpv_viajesmultitransstock": null
+            }
+        },
+        {
+            "type": "insertAfterNode",
+            "path": "/models/flfact_tpv/tpv_viajesmultitransstock",
+            "value": {
+                "tpv_lineasmultitransstock": null
+            }
+        },
+        {
+            "type": "insertAfterNode",
+            "path": "/models/flfactalma/lineasregstocks",
+            "value": {
+                "atributosarticulos": null
+            }
+        },
+        {
+            "type": "insertAfterNode",
+            "path": "/models/flfactppal/zonasgeo",
+            "value": {
+                "idl_recepciones": null
+            }
+        },
+        {
+            "type": "insertAfterNode",
+            "path": "/models/flfactppal/idl_recepciones",
+            "value": {
+                "idl_preparaciones": null
+            }
+        }
+    ]
 }

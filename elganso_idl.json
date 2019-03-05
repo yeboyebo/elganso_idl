@@ -18,7 +18,48 @@
         ],
         "deleteFile": [],
         "patchScript": [],
-        "addFile": []
+        "addFile": [
+            {
+                "path": "models/flfact_tpv/",
+                "name": "model_flfact_tpv__tpv_viajesmultitransstock.py"
+            },
+            {
+                "path": "models/flfact_tpv/",
+                "name": "model_flfact_tpv__tpv_viajesmultitransstock_def.py"
+            },
+            {
+                "path": "models/flfact_tpv/",
+                "name": "model_flfact_tpv__tpv_lineasmultitransstock.py"
+            },
+            {
+                "path": "models/flfact_tpv/",
+                "name": "model_flfact_tpv__tpv_lineasmultitransstock_def.py"
+            },
+            {
+                "path": "models/flfactalma/",
+                "name": "model_flfactalma__atributosarticulos.py"
+            },
+            {
+                "path": "models/flfactalma/",
+                "name": "model_flfactalma__atributosarticulos_def.py"
+            },
+            {
+                "path": "models/flfactppal/",
+                "name": "model_flfactppal__idl_recepciones.py"
+            },
+            {
+                "path": "models/flfactppal/",
+                "name": "model_flfactppal__idl_recepciones_def.py"
+            },
+            {
+                "path": "models/flfactppal/",
+                "name": "model_flfactppal__idl_preparaciones.py"
+            },
+            {
+                "path": "models/flfactppal/",
+                "name": "model_flfactppal__idl_preparaciones_def.py"
+            }
+        ]
     },
     "name": "elganso_idl"
 }
