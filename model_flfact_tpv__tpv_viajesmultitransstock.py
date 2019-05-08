@@ -28,6 +28,9 @@ class elganso_idl_tpv_viajesmultitransstock(interna_tpv_viajesmultitransstock, h
     def confirmapreparacion(params):
         return form.iface.confirmapreparacion(params)
 
+    @helpers.decoradores.csr()
+    def confirmaecommerce(params):
+        return form.iface.confirmaecommerce(params)
 
 # @class_declaration tpv_viajesmultitransstock #
 class tpv_viajesmultitransstock(elganso_idl_tpv_viajesmultitransstock, helpers.MixinConAcciones):

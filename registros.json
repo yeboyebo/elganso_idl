@@ -16,6 +16,13 @@
             "value": {
                 "tpv_lineasmultitransstock": null
             }
+        },
+        {
+            "type": "insertAfterNode",
+            "path": "/flfactppal/usuarios",
+            "value": {
+                "idl_confirmacionpreparaciones": null
+            }
         }
     ]
 }
