@@ -23,6 +23,13 @@
             "value": {
                 "idl_confirmacionpreparaciones": null
             }
+        },
+        {
+            "type": "insertAfterNode",
+            "path": "/flfactppal/idl_confirmacionpreparaciones",
+            "value": {
+                "idl_confirmacionrecepciones": null
+            }
         }
     ]
 }

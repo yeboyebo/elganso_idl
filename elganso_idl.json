@@ -66,6 +66,14 @@
             {
                 "path": "models/flfactppal/",
                 "name": "model_flfactppal__idl_confirmacionpreparaciones_def.py"
+            },
+            {
+                "path": "models/flfactppal/",
+                "name": "model_flfactppal__idl_confirmacionrecepciones.py"
+            },
+            {
+                "path": "models/flfactppal/",
+                "name": "model_flfactppal__idl_confirmacionrecepciones_def.py"
             }
         ]
     },

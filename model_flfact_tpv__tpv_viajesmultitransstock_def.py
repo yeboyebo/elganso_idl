@@ -482,6 +482,171 @@ class elganso_idl(interna):
 
         return xmlstring
 
+    def elganso_idl_confirmadevolucion(self, params):
+        print("confirmadevolucion")
+        res = []
+        res.append("OK")
+        res.append("")
+
+        hoy = datetime.datetime.now().strftime("%d%m%Y%H%M")
+        qsatype.debug(params)
+
+        print(params)
+        doc = ""
+        xml = ""
+        # {"source": "yeboyebo", "Content-Type": "application/xml", "key": "34762d577d2c6132417e5e5e2f"}
+        try:
+            if "key" in params and params['key'] == "34762d577d2c6132417e5e5e2f":
+                print("entra key ")
+                if "xml" in params and params['xml'] != "":
+                    print("entra xml")
+                    xml = params['xml']
+
+                    hoy = datetime.datetime.now().strftime("%d%m%Y%H%M")
+                    root = ET.fromstring(xml)
+                    tree = ET.ElementTree(root)
+                    tree.write("/var/www/xmldevoluciones/confdevolucion_" + hoy + ".xml")
+
+                    childGeneral = root.find('int53/rub110')
+                    if childGeneral:
+                        if(childGeneral.find("activity_code").text != "GNS"):
+                            res[0] = "KO"
+                            res[1] = "rub110: activity_code erroneo"
+
+                        elif (childGeneral.find("physical_depot_code").text != "GNS"):
+                            res[0] = "KO"
+                            if res[1] != "":
+                                res[1] += " "
+                            res[1] += "rub110: activity_code erroneo"
+                        else:
+                            childCabecera = root.find('int53/rub110/rub130')
+                            doc = ""
+                            if childCabecera:
+                                doc = childCabecera.find("receipt_reference").text
+                                if not doc or doc == "":
+                                    res[0] = "KO"
+                                    if res[1] != "":
+                                        res[1] += " "
+                                    res[1] += "rub130: receipt_reference no puede estar vacío"
+                                else:
+                                    fin = len(doc)
+                                    codDoc = doc[1:fin]
+                                    idDoc = 0
+                                    existeDoc = qsatype.FLUtil.sqlSelect(u"idl_confirmacionrecepciones", u"documentos", u"documentos = '" + doc + u"'")
+                                    if not existeDoc:
+                                        idDoc = qsatype.FLUtil.sqlSelect(u"tpv_comandas", u"idtpv_comanda", u"codigo = '" + codDoc + u"'")
+                                        if not idDoc:
+                                            res[0] = "KO"
+                                            if res[1] != "":
+                                                res[1] += " "
+                                            res[1] += "rub130: no se encontró el documento"
+                                        # comprobar que no se haya confirmado ya
+                                        if res[0] != "KO":
+                                            if qsatype.FLUtil.sqlSelect("idl_confirmacionrecepciones", "idrecepcion", "documentos like '%" + doc + "%' and estadoprocesado != '' and estadoprocesado is not null"):
+                                                res[0] = "KO"
+                                                if res[1] != "":
+                                                    res[1] += " "
+                                                res[1] += "rub130: documento ya procesado"
+                                            else:
+                                                for referemcias in root.findall('int53/rub110/rub310'):
+                                                    articulo = referemcias.find("item_code").text
+                                                    if not articulo or articulo == "":
+                                                        res[0] = "KO"
+                                                        if res[1] != "":
+                                                            res[1] += " "
+                                                        res[1] += "rub310: item_code no puede estar vacío"
+
+                                                    # referencia, talla = articulo.split("-")
+                                                    # if talla == "T":
+                                                    #    talla = "TU"
+                                                    barcode = articulo
+                                                    # qsatype.FLUtil.sqlSelect("atributosarticulos", "barcode", "referencia = '" + referencia + "' and talla = '" + talla + "'")
+                                                    if barcode and barcode != "":
+                                                        idlinea = qsatype.FLUtil.sqlSelect("tpv_lineascomanda", "idtpv_linea", "barcode = '" + str(barcode) + "' and idtpv_comanda = " + str(idDoc))
+                                                        if not idlinea:
+                                                            res[0] = "KO"
+                                                            if res[1] != "":
+                                                                res[1] += " "
+                                                            res[1] += "rub310: no se encontró el artículo en el documento"
+                                                    else:
+                                                        res[0] = "KO"
+                                                        if res[1] != "":
+                                                            res[1] += " "
+                                                        res[1] += "rub310: no se encontró el artículo"
+
+                                                    cantidad = 0
+                                                    childCantidad = referemcias.find('rub340')
+                                                    if childCantidad:
+                                                        error = ""
+                                                        if childCantidad.find("shortage_on_receipt_reason_code"):
+                                                            error = childCantidad.find("shortage_on_receipt_reason_code").text
+                                                            if not error or error == "":
+                                                                cantidad = childCantidad.find("base_lv_quantity_confirmed").text
+                                                                if not cantidad:
+                                                                    res[0] = "KO"
+                                                                    if res[1] != "":
+                                                                        res[1] += " "
+                                                                    res[1] += "rub340: base_lv_quantity_confirmed no puede estar vacío"
+                                                    else:
+                                                        res[0] = "KO"
+                                                        if res[1] != "":
+                                                            res[1] += " "
+                                                        res[1] += "rub340: No se ha encontrado la cantidad"
+                                    else:
+                                        res[0] = "KO"
+                                        if res[1] != "":
+                                            res[1] += " "
+                                        res[1] += "rub210: originator_reference ya se ha enviado anteriormente"
+                    else:
+                        res[0] = "KO"
+                        if res[1] != "":
+                            res[1] += " "
+                        res[1] += "No se encontraron datos"
+                else:
+                    res[0] = "KO"
+                    if res[1] != "":
+                        res[1] += " "
+                    # Borrar comentario
+                    res[1] += "No se encontraron datos"
+            else:
+                res[0] = "KO"
+                if res[1] != "":
+                    res[1] += " "
+                res[1] += "key inválida"
+        except Exception as e:
+            res[0] = "KO"
+            if res[1] != "":
+                res[1] += " "
+            res[1] += "Error: " + str(e)
+
+        response = ET.Element("receipt_confirmation_response")
+        int53 = ET.SubElement(response, "int53")
+        r110 = ET.SubElement(int53, "rub110")
+        ET.SubElement(r110, "activity_code").text = "GNS"
+        ET.SubElement(r110, "physical_depot_code").text = "GNS"
+        ET.SubElement(r110, "status").text = res[0]
+        error = ET.SubElement(r110, "error_descriptions")
+        ET.SubElement(error, "error_description").text = res[1]
+        xmlstring = tostring(response, 'utf-8', method="xml").decode("ISO8859-15")
+
+        xmlstring = xmlstring.replace("'", "\\'")
+        xml = str(xml).replace("'", "\\'")
+
+        fechaActual = qsatype.FactoriaModulos.get('flfactppal').iface.dameFechaActual()
+        horaActual = qsatype.FactoriaModulos.get('flfactppal').iface.dameHoraActual()
+        procesar = "true"
+        estado = "true"
+        if res[0] == "KO":
+            procesar = "false"
+            estado = "false"
+
+        if xml and xml != "":
+            if not qsatype.FLUtil.sqlInsert("idl_confirmacionrecepciones", ["fecharecepcion", "horarecepcion", "recepcion", "documentos", "respuesta", "estado", "procesar"], [str(fechaActual), str(horaActual), xml, doc, xmlstring, estado, procesar]):
+                print("sale por aqui")
+                return False
+
+        return xmlstring
+
     def __init__(self, context=None):
         super().__init__(context)
 
@@ -496,6 +661,9 @@ class elganso_idl(interna):
 
     def confirmaecommerce(self, params):
         return self.ctx.elganso_idl_confirmaecommerce(params)
+
+    def confirmadevolucion(self, params):
+        return self.ctx.elganso_idl_confirmadevolucion(params)
 
 
 # @class_declaration head #
