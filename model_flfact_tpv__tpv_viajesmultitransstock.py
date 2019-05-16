@@ -36,6 +36,10 @@ class elganso_idl_tpv_viajesmultitransstock(interna_tpv_viajesmultitransstock, h
     def confirmadevolucion(params):
         return form.iface.confirmadevolucion(params)
 
+    @helpers.decoradores.csr()
+    def confirmafaltante(params):
+        return form.iface.confirmafaltante(params)
+
 
 # @class_declaration tpv_viajesmultitransstock #
 class tpv_viajesmultitransstock(elganso_idl_tpv_viajesmultitransstock, helpers.MixinConAcciones):

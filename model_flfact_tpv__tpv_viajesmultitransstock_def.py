@@ -483,7 +483,6 @@ class elganso_idl(interna):
         return xmlstring
 
     def elganso_idl_confirmadevolucion(self, params):
-        print("confirmadevolucion")
         res = []
         res.append("OK")
         res.append("")
@@ -647,6 +646,121 @@ class elganso_idl(interna):
 
         return xmlstring
 
+    def elganso_idl_confirmafaltante(self, params):
+        res = []
+        res.append("OK")
+        res.append("")
+
+        hoy = datetime.datetime.now().strftime("%d%m%Y%H%M")
+        # qsatype.debug(params)
+
+        # print(params)
+        codDoc = ""
+        xml = ""
+        doc = ""
+        # {"source": "yeboyebo", "Content-Type": "application/xml", "key": "34762d577d2c6132417e5e5e2f"}
+        try:
+            if "key" in params and params['key'] == "34762d577d2c6132417e5e5e2f":
+                if "xml" in params and params['xml'] != "":
+                    xml = params['xml']
+                    hoy = datetime.datetime.now().strftime("%d%m%Y%H%M")
+                    root = ET.fromstring(xml)
+                    tree = ET.ElementTree(root)
+                    tree.write("/var/www/xmlfaltante/conffaltante_" + hoy + ".xml")
+                    childGeneral = root.find('int50/rub110')
+                    if childGeneral:
+                        if(childGeneral.find("activity_code").text != "GNS"):
+                            res[0] = "KO"
+                            res[1] = "rub110: activity_code erroneo"
+
+                        elif (childGeneral.find("physical_depot_code").text != "GNS"):
+                            res[0] = "KO"
+                            if res[1] != "":
+                                res[1] += " "
+                            res[1] += "rub110: activity_code erroneo"
+                        else:
+                            for articulos in root.findall('int50/rub110/rub120'):
+                                doc = str(childGeneral.find("originator_reference").text)
+                                if not doc or doc == "":
+                                    res[0] = "KO"
+                                    if res[1] != "":
+                                        res[1] += " "
+                                    res[1] += "rub210: originator_reference no puede estar vacío"
+                                else:
+                                    barcode = str(articulos.find("item_code").text)
+                                    if not barcode or barcode == "":
+                                        res[0] = "KO"
+                                        if res[1] != "":
+                                            res[1] += " "
+                                        res[1] += "rub210: item_code no puede estar vacío"
+                                    else:
+                                        fin = len(doc)
+                                        codDoc = doc[1:fin]
+                                        # Pedidoscli
+                                        # if doc[0:1] == "T":
+                                        idDoc = qsatype.FLUtil.sqlSelect(u"tpv_comandas", u"idtpv_comanda", u"codigo = '" + codDoc + u"'")
+                                        if not idDoc:
+                                            res[0] = "KO"
+                                            if res[1] != "":
+                                                res[1] += " "
+                                            res[1] += "rub210: no se encontró el documento " + codDoc
+                                        else:
+                                            idfaltante = qsatype.FLUtil.sqlSelect("idl_ecommercefaltante", "id", "barcode = '" + str(barcode) + "' and idtpv_comanda = " + str(idDoc) + " and NOT cerrada and faltante > cantconfirmada")
+                                            if not idfaltante:
+                                                res[0] = "KO"
+                                                if res[1] != "":
+                                                    res[1] += " "
+                                                res[1] += "rub210: no se encontró el artículo la tabla de faltantes"
+                    else:
+                        res[0] = "KO"
+                        if res[1] != "":
+                            res[1] += " "
+                        res[1] += "No se encontraron datos"
+                else:
+                    res[0] = "KO"
+                    if res[1] != "":
+                        res[1] += " "
+                    res[1] += "No se encontró el xml"
+            else:
+                res[0] = "KO"
+                if res[1] != "":
+                    res[1] += " "
+                res[1] += "key inválida"
+        except Exception as e:
+            res[0] = "KO"
+            if res[1] != "":
+                res[1] += " "
+            res[1] += "Error: " + str(e)
+
+        response = ET.Element("faltantes_response")
+        int50 = ET.SubElement(response, "int50")
+        r110 = ET.SubElement(int50, "rub110")
+        ET.SubElement(r110, "activity_code").text = "GNS"
+        ET.SubElement(r110, "physical_depot_code").text = "GNS"
+        ET.SubElement(r110, "status").text = res[0]
+        ET.SubElement(r110, "originator_code").text = doc
+        ET.SubElement(r110, "order_reference").text = doc
+        error = ET.SubElement(r110, "error_descriptions")
+        ET.SubElement(error, "error_description").text = res[1]
+        xmlstring = tostring(response, 'utf-8', method="xml").decode("ISO8859-15")
+
+        xmlstring = xmlstring.replace("'", "\\'")
+        xml = str(xml).replace("'", "\\'")
+
+        fechaActual = qsatype.FactoriaModulos.get('flfactppal').iface.dameFechaActual()
+        horaActual = qsatype.FactoriaModulos.get('flfactppal').iface.dameHoraActual()
+        procesar = "true"
+        estado = "true"
+        if res[0] == "KO":
+            procesar = "false"
+            estado = "false"
+
+        if xml and xml != "":
+            if not qsatype.FLUtil.sqlInsert("idl_confirmacionfaltantes", ["fecha", "hora", "faltante", "documentos", "respuesta", "estado", "procesar"], [str(fechaActual), str(horaActual), xml, doc, xmlstring, estado, procesar]):
+                return False
+
+        return xmlstring
+
     def __init__(self, context=None):
         super().__init__(context)
 
@@ -664,6 +778,9 @@ class elganso_idl(interna):
 
     def confirmadevolucion(self, params):
         return self.ctx.elganso_idl_confirmadevolucion(params)
+
+    def confirmafaltante(self, params):
+        return self.ctx.elganso_idl_confirmafaltante(params)
 
 
 # @class_declaration head #
