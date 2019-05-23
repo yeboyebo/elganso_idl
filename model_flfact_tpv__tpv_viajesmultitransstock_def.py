@@ -75,14 +75,8 @@ class elganso_idl(interna):
                                         existeDoc = str(qsatype.FLUtil.sqlSelect(u"idl_preparaciones", u"documentos", u"documentos = '" + doc + u"'"))
                                         print("select documentos from idl_preparaciones where documentos = '" + doc + "'")
                                         print("existeDoc " + existeDoc)
-                                        if existeDoc and existeDoc != "None" and existeDoc != False and existeDoc != None:
-                                            print("if")
-                                            res[0] = "KO"
-                                            if res[1] != "":
-                                                res[1] += " "
-                                            res[1] += "rub210: originator_reference ya se ha enviado anteriormente"
-                                        else:
-                                            print("else")
+                                        if not existeDoc:
+                                            print("entra")
                                             if documento == "":
                                                 documento = doc
                                                 longitud = len(doc)
@@ -149,6 +143,12 @@ class elganso_idl(interna):
                                                     if res[1] != "":
                                                         res[1] += " "
                                                     res[1] += "rub210: originator_reference la preparación no puede pertenecer a más de un documento diferente"
+                                        else:
+                                            print("else")
+                                            res[0] = "KO"
+                                            if res[1] != "":
+                                                res[1] += " "
+                                            res[1] += "rub210: originator_reference ya se ha enviado anteriormente"
                     else:
                         res[0] = "KO"
                         if res[1] != "":
