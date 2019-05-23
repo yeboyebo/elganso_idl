@@ -82,6 +82,30 @@
             {
                 "name": "model_flfactppal__idl_confirmacionfaltantes_def.py",
                 "path": "models/flfactppal/"
+            },
+            {
+                "path": "models/flfact_tpv/",
+                "name": "model_flfact_tpv__idl_confirmacionfaltantes.py"
+            },
+            {
+                "path": "models/flfact_tpv/",
+                "name": "model_flfact_tpv__idl_confirmacionfaltantes_def.py"
+            },
+            {
+                "path": "models/flfact_tpv/",
+                "name": "model_flfact_tpv__idl_ecommerce.py"
+            },
+            {
+                "path": "models/flfact_tpv/",
+                "name": "model_flfact_tpv__idl_ecommerce_def.py"
+            },
+            {
+                "path": "models/flfact_tpv/",
+                "name": "model_flfact_tpv__idl_ecommercedevoluciones.py"
+            },
+            {
+                "path": "models/flfact_tpv/",
+                "name": "model_flfact_tpv__idl_ecommercedevoluciones_def.py"
             }
         ]
     },

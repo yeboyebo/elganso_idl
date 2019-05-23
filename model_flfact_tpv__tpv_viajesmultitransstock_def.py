@@ -72,16 +72,14 @@ class elganso_idl(interna):
                                             res[1] += " "
                                         res[1] += "rub210: originator_reference no puede estar vacío"
                                     else:
-                                        existeDoc = str(qsatype.FLUtil.sqlSelect(u"idl_preparaciones", u"documentos", u"documentos = '" + doc + u"'"))
-                                        print("select documentos from idl_preparaciones where documentos = '" + doc + "'")
-                                        print("existeDoc " + existeDoc)
+                                        existeDoc = qsatype.FLUtil.sqlSelect(u"idl_preparaciones", u"documentos", u"documentos = '" + doc + u"'")
                                         if not existeDoc:
                                             print("entra")
                                             if documento == "":
                                                 documento = doc
                                                 longitud = len(doc)
-                                                esEcommerce = str(qsatype.FLUtil.sqlSelect(u"idl_ecommerce", u"codcomanda", u"codcomanda = '" + str(doc[1:longitud]) + "'"))
-                                                print("esEcommerce " + esEcommerce)
+                                                esEcommerce = qsatype.FLUtil.sqlSelect(u"idl_ecommerce", u"codcomanda", u"codcomanda = '" + str(doc[1:longitud]) + "'")
+                                                print("esEcommerce " + str(esEcommerce))
                                                 if esEcommerce and esEcommerce != "":
                                                     fin = len(doc)
                                                     codDoc = doc[1:fin]

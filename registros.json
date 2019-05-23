@@ -19,7 +19,42 @@
         },
         {
             "type": "insertAfterNode",
+            "path": "/flfact_tpv/tpv_lineasmultitransstock",
+            "value": {
+                "idl_confirmacionfaltantes": null
+            }
+        },
+        {
+            "type": "insertAfterNode",
+            "path": "/flfact_tpv/idl_confirmacionfaltantes",
+            "value": {
+                "idl_ecommerce": null
+            }
+        },
+        {
+            "type": "insertAfterNode",
+            "path": "/flfact_tpv/idl_ecommerce",
+            "value": {
+                "idl_ecommercedevoluciones": null
+            }
+        },
+        {
+            "type": "insertAfterNode",
             "path": "/flfactppal/usuarios",
+            "value": {
+                "idl_recepciones": null
+            }
+        },
+        {
+            "type": "insertAfterNode",
+            "path": "/flfactppal/idl_recepciones",
+            "value": {
+                "idl_preparaciones": null
+            }
+        },
+        {
+            "type": "insertAfterNode",
+            "path": "/flfactppal/idl_preparaciones",
             "value": {
                 "idl_confirmacionpreparaciones": null
             }
@@ -29,13 +64,6 @@
             "path": "/flfactppal/idl_confirmacionpreparaciones",
             "value": {
                 "idl_confirmacionrecepciones": null
-            }
-        },
-        {
-            "type": "insertAfterNode",
-            "path": "/flfactppal/idl_confirmacionrecepciones",
-            "value": {
-                "idl_confirmacionfaltantes": null
             }
         }
     ]

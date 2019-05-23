@@ -16,6 +16,27 @@
         },
         {
             "type": "insertAfterNode",
+            "path": "/models/flfact_tpv/tpv_lineasmultitransstock",
+            "value": {
+                "idl_confirmacionfaltantes": null
+            }
+        },
+        {
+            "type": "insertAfterNode",
+            "path": "/models/flfact_tpv/idl_confirmacionfaltantes",
+            "value": {
+                "idl_ecommerce": null
+            }
+        },
+        {
+            "type": "insertAfterNode",
+            "path": "/models/flfact_tpv/idl_ecommerce",
+            "value": {
+                "idl_ecommercedevoluciones": null
+            }
+        },
+        {
+            "type": "insertAfterNode",
             "path": "/models/flfactalma/lineasregstocks",
             "value": {
                 "atributosarticulos": null
@@ -47,13 +68,6 @@
             "path": "/models/flfactppal/idl_confirmacionpreparaciones",
             "value": {
                 "idl_confirmacionrecepciones": null
-            }
-        },
-        {
-            "type": "insertAfterNode",
-            "path": "/models/flfactppal/idl_confirmacionrecepciones",
-            "value": {
-                "idl_confirmacionfaltantes": null
             }
         }
     ]
