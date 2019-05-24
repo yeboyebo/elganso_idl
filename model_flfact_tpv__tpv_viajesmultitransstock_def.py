@@ -16,6 +16,7 @@ import xml.etree.cElementTree as ET
 from xml.etree.ElementTree import tostring
 import datetime
 
+
 class elganso_idl(interna):
 
     def elganso_idl_getDesc(self):
@@ -809,6 +810,139 @@ class elganso_idl(interna):
 
         return xmlstring
 
+    # Creado por Lorena el 24/05/2019
+    def elganso_idl_confirmaajustesstock(self, params):
+        res = []
+        res.append("OK")
+        res.append("")
+
+        ipg = []
+        ipg.append("")
+        ipg.append("")
+
+        hoy = datetime.datetime.now().strftime("%d%m%Y%H%M")
+        xml = ""
+
+        # {"source": "yeboyebo", "Content-Type": "application/xml", "key": "34762d577d2c6132417e5e5e2f"}
+        try:
+            if "key" in params and params['key'] == "34762d577d2c6132417e5e5e2f":
+                if "xml" in params and params['xml'] != "":
+                    xml = params['xml']
+                    hoy = datetime.datetime.now().strftime("%d%m%Y%H%M")
+                    root = ET.fromstring(xml)
+                    tree = ET.ElementTree(root)
+                    tree.write("/var/www/xmlajustesstock/confajustesstock_" + hoy + ".xml")
+
+                    for childGeneral in root.findall('int62/rub110'):
+                        if(childGeneral.find("activity_code").text != "GNS"):
+                            res[0] = "KO"
+                            res[1] = "rub110: activity_code erroneo"
+                            return self.iface.creaRespuesta(res, ipg, xml)
+
+                        if (childGeneral.find("physical_depot_code").text != "GNS"):
+                            res[0] = "KO"
+                            if res[1] != "":
+                                res[1] += " "
+                            res[1] += "rub110: physical_depot_code erroneo"
+                            return self.iface.creaRespuesta(res, ipg, xml)
+
+                        ipg[0] = childGeneral.find("ipg_move_year_no").text
+                        if not ipg[0] or ipg[0] == "":
+                            res[0] = "KO"
+                            if res[1] != "":
+                                res[1] += " "
+                            res[1] += "rub110: ipg_move_year_no debe estar informado"
+                            return self.iface.creaRespuesta(res, ipg, xml)
+
+                        ipg[1] = childGeneral.find("ipg_move_no").text
+                        if not ipg[1] or ipg[1] == "":
+                            res[0] = "KO"
+                            if res[1] != "":
+                                res[1] += " "
+                            res[1] += "rub110: ipg_move_no debe estar informado"
+                            return self.iface.creaRespuesta(res, ipg, xml)
+
+                        barcode = str(childGeneral.find("item_code").text)
+                        if not barcode or barcode == "":
+                            res[0] = "KO"
+                            if res[1] != "":
+                                res[1] += " "
+                            res[1] += "rub110: item_code debe estar informado"
+                            return self.iface.creaRespuesta(res, ipg, xml)
+
+                        existeBC = qsatype.FLUtil.sqlSelect(u"atributosarticulos", u"barcode", u"barcode = '" + barcode + u"'")
+                        if not existeBC or existeBC == "":
+                            res[0] = "KO"
+                            if res[1] != "":
+                                res[1] += " "
+                            res[1] += "rub110: El artículo " + barcode + " no existe"
+                            return self.iface.creaRespuesta(res, ipg, xml)
+
+                        almacen = str(childGeneral.find("owner_code").text)
+                        if not almacen or almacen == "":
+                            res[0] = "KO"
+                            if res[1] != "":
+                                res[1] += " "
+                            res[1] += "rub110: owner_code debe estar informado"
+                            return self.iface.creaRespuesta(res, ipg, xml)
+
+                        existeAlmacen = qsatype.FLUtil.sqlSelect(u"almacenesidl", u"codalmacenidl", u"codalmacenidl = '" + almacen + u"'")
+                        if not existeAlmacen or existeAlmacen == "":
+                            res[0] = "KO"
+                            if res[1] != "":
+                                res[1] += " "
+                            res[1] += "rub110: El almacen " + almacen + " no existe"
+                            return self.iface.creaRespuesta(res, ipg, xml)
+                else:
+                    res[0] = "KO"
+                    if res[1] != "":
+                        res[1] += " "
+                    res[1] += "No se encontró el xml"
+            else:
+                res[0] = "KO"
+                if res[1] != "":
+                    res[1] += " "
+                res[1] += "key inválida"
+
+        except Exception as e:
+            res[0] = "KO"
+            if res[1] != "":
+                res[1] += " "
+            res[1] += "Error: " + str(e)
+
+        return self.iface.creaRespuesta(res, ipg, xml)
+
+    def elganso_idl_creaRespuesta(self, res, ipg, xml):
+        response = ET.Element("stock_adjustments_response")
+        int62 = ET.SubElement(response, "int62")
+        r110 = ET.SubElement(int62, "rub110")
+        ET.SubElement(r110, "activity_code").text = "GNS"
+        ET.SubElement(r110, "physical_depot_code").text = "GNS"
+        ET.SubElement(r110, "ipg_move_year_no").text = ipg[0]
+        ET.SubElement(r110, "ipg_move_no").text = ipg[1]
+        ET.SubElement(r110, "status").text = res[0]
+        error = ET.SubElement(r110, "error_descriptions")
+        ET.SubElement(error, "error_description").text = res[1]
+        xmlstring = tostring(response, 'utf-8', method="xml").decode("ISO8859-15")
+
+        xmlstring = xmlstring.replace("'", "\\'")
+        xml = str(xml).replace("'", "\\'")
+
+        fechaActual = qsatype.FactoriaModulos.get('flfactppal').iface.dameFechaActual()
+        horaActual = qsatype.FactoriaModulos.get('flfactppal').iface.dameHoraActual()
+        procesar = "true"
+        estado = "true"
+        if res[0] == "KO":
+            procesar = "false"
+            estado = "false"
+
+        if xml and xml != "":
+            doc = ipg[0] + "-" + ipg[1]
+            if not qsatype.FLUtil.sqlInsert("idl_ajustesstock", ["fecha", "hora", "ajustestock", "documentos", "respuesta", "estado", "procesar"], [str(fechaActual), str(horaActual), xml, doc, xmlstring, estado, procesar]):
+                return False
+
+        return xmlstring
+
     def __init__(self, context=None):
         super().__init__(context)
 
@@ -829,6 +963,12 @@ class elganso_idl(interna):
 
     def confirmafaltante(self, params):
         return self.ctx.elganso_idl_confirmafaltante(params)
+
+    def confirmaajustesstock(self, params):
+        return self.ctx.elganso_idl_confirmaajustesstock(params)
+
+    def creaRespuesta(self, res, ipg, xml):
+        return self.ctx.elganso_idl_creaRespuesta(res, ipg, xml)
 
 
 # @class_declaration head #

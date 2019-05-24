@@ -69,6 +69,13 @@
             "value": {
                 "idl_confirmacionrecepciones": null
             }
+        },
+        {
+            "type": "insertAfterNode",
+            "path": "/models/flfactppal/idl_confirmacionrecepciones",
+            "value": {
+                "idl_ajustesstock": null
+            }
         }
     ]
 }

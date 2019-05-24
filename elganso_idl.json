@@ -106,6 +106,14 @@
             {
                 "path": "models/flfact_tpv/",
                 "name": "model_flfact_tpv__idl_ecommercedevoluciones_def.py"
+            },
+            {
+                "path": "models/flfactppal/",
+                "name": "model_flfactppal__idl_ajustesstock.py"
+            },
+            {
+                "path": "models/flfactppal/",
+                "name": "model_flfactppal__idl_ajustesstock_def.py"
             }
         ]
     },
