@@ -736,20 +736,20 @@ class elganso_idl(interna):
                                 res[1] += " "
                             res[1] += "rub110: activity_code erroneo"
                         else:
-                            for articulos in root.findall('int50/rub110/rub210'):
+                            for articulos in root.findall('int50/rub120'):
                                 doc = str(articulos.find("originator_reference").text)
                                 if not doc or doc == "":
                                     res[0] = "KO"
                                     if res[1] != "":
                                         res[1] += " "
-                                    res[1] += "rub210: originator_reference no puede estar vacío"
+                                    res[1] += "rub120: originator_reference no puede estar vacío"
                                 else:
                                     barcode = str(articulos.find("item_code").text)
                                     if not barcode or barcode == "":
                                         res[0] = "KO"
                                         if res[1] != "":
                                             res[1] += " "
-                                        res[1] += "rub210: item_code no puede estar vacío"
+                                        res[1] += "rub120: item_code no puede estar vacío"
                                     else:
                                         fin = len(doc)
                                         codDoc = doc[1:fin]
@@ -760,14 +760,14 @@ class elganso_idl(interna):
                                             res[0] = "KO"
                                             if res[1] != "":
                                                 res[1] += " "
-                                            res[1] += "rub210: no se encontró el documento " + codDoc
+                                            res[1] += "rub120: no se encontró el documento " + codDoc
                                         else:
                                             idfaltante = qsatype.FLUtil.sqlSelect("idl_ecommercefaltante", "id", "barcode = '" + str(barcode) + "' and idtpv_comanda = " + str(idDoc) + " and NOT cerrada and faltante > cantconfirmada")
                                             if not idfaltante:
                                                 res[0] = "KO"
                                                 if res[1] != "":
                                                     res[1] += " "
-                                                res[1] += "rub210: no se encontró el artículo la tabla de faltantes"
+                                                res[1] += "rub120: no se encontró el artículo la tabla de faltantes"
                     else:
                         res[0] = "KO"
                         if res[1] != "":
