@@ -736,7 +736,7 @@ class elganso_idl(interna):
                                 res[1] += " "
                             res[1] += "rub110: activity_code erroneo"
                         else:
-                            for articulos in root.findall('int50/rub120'):
+                            for articulos in root.findall('int50/rub110/rub120'):
                                 doc = str(articulos.find("originator_reference").text)
                                 if not doc or doc == "":
                                     res[0] = "KO"
@@ -762,12 +762,12 @@ class elganso_idl(interna):
                                                 res[1] += " "
                                             res[1] += "rub120: no se encontró el documento " + codDoc
                                         else:
-                                            idfaltante = qsatype.FLUtil.sqlSelect("idl_ecommercefaltante", "id", "barcode = '" + str(barcode) + "' and idtpv_comanda = " + str(idDoc) + " and NOT cerrada and faltante > cantconfirmada")
+                                            idfaltante = qsatype.FLUtil.sqlSelect("tpv_lineascomanda", "idtpv_linea", "barcode = '" + str(barcode) + "' and idtpv_comanda = " + str(idDoc))
                                             if not idfaltante:
                                                 res[0] = "KO"
                                                 if res[1] != "":
                                                     res[1] += " "
-                                                res[1] += "rub120: no se encontró el artículo la tabla de faltantes"
+                                                res[1] += "rub120: no se encontró el artículo en la venta"
                     else:
                         res[0] = "KO"
                         if res[1] != "":
