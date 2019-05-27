@@ -262,12 +262,20 @@ class elganso_idl(interna):
                                                     res[1] += " "
                                                 res[1] += "rub210: no se encontró el documento"
                                             else:
-                                                idlinea = qsatype.FLUtil.sqlSelect("tpv_lineascomanda", "idtpv_linea", "barcode = '" + str(barcode) + "' and idtpv_comanda = " + str(idDoc))
-                                                if not idlinea:
-                                                    res[0] = "KO"
-                                                    if res[1] != "":
-                                                        res[1] += " "
-                                                    res[1] += "rub210: no se encontró el artículo en el documento"
+                                                for referemcias in root.findall('int53/rub110/rub310'):
+                                                    barcode = referemcias.find("item_code").text
+                                                    if not barcode or barcode == "":
+                                                        res[0] = "KO"
+                                                        if res[1] != "":
+                                                            res[1] += " "
+                                                        res[1] += "rub310: item_code no puede estar vacío"
+                                                    else:
+                                                        idlinea = qsatype.FLUtil.sqlSelect("tpv_lineascomanda", "idtpv_linea", "barcode = '" + str(barcode) + "' and idtpv_comanda = " + str(idDoc))
+                                                        if not idlinea:
+                                                            res[0] = "KO"
+                                                            if res[1] != "":
+                                                                res[1] += " "
+                                                            res[1] += "rub210: no se encontró el artículo en el documento"
                                         else:
                                             if doc.startswith('P'):
                                                 idDoc = qsatype.FLUtil.sqlSelect(u"pedidosprov", u"idpedido", u"codigo = '" + doc[1:fin] + u"'")
