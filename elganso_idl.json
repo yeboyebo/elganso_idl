@@ -17,7 +17,16 @@
             }
         ],
         "deleteFile": [],
-        "patchScript": [],
+        "patchScript": [
+            {
+                "name": "model_flfactalma__articulos_def.py",
+                "path": "models/flfactalma/"
+            },
+            {
+                "name": "model_flfactalma__articulos.py",
+                "path": "models/flfactalma/"
+            }
+        ],
         "addFile": [
             {
                 "path": "models/flfact_tpv/",
