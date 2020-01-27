@@ -6,7 +6,7 @@ import datetime
 
 class elganso_idl(flfactalma):
 
-    def elganso_idl_dameprecioarticulo(self, params):
+    def elganso_idl_damedatosarticulo(self, params):
         error = ""
         precio = ""
         stock = ""
@@ -16,6 +16,7 @@ class elganso_idl(flfactalma):
             if "key" in params and params['key'] == "34762d577d2c6132417e5e5e2f":
                 if "xml" in params and params['xml'] != "":
                     xml = params['xml']
+                    print(xml)
                     root = ET.fromstring(xml)
 
                     barcode = root.find("barcode").text
@@ -53,12 +54,57 @@ class elganso_idl(flfactalma):
                     stock = str(qsatype.FLUtil.sqlSelect("stocks", "disponible", "barcode = '" + barcode + "' AND codalmacen = '" + codAlmacen + "'"))
                     if not stock or stock == "" or stock == "None":
                         stock = "0"
-
+                else:
+                    error = "No se encontró el xml"
+                    return self.iface.crearespuesta(error, precio, stock, barcode, codTienda)
+            else:
+                error = "No se encontró la key"
+                return self.iface.crearespuesta(error, precio, stock, barcode, codTienda)
 
         except Exception as e:
             error = "Error: " + str(e)
 
         return self.iface.crearespuesta(error, precio, stock, barcode, codTienda)
+
+    def elganso_idl_damearticulos(self, params):
+        error = "";
+        resXml = "";
+        try:
+            if "key" in params and params['key'] == "34762d577d2c6132417e5e5e2f":
+                listaOutlet = qsatype.FLUtil.sqlSelect("param_parametros", "valor", "nombre = 'ALMACENES_OUTLET'")
+                if not listaOutlet or listaOutlet == "":
+                    error = "<articulos><error>Se debe configurar el parámetro ALMACENES_OUTLET.</error></articulos>"
+                    return error
+
+                listaOutlet = listaOutlet.replace(",", "','")
+
+                q = qsatype.FLSqlQuery()
+                q.setSelect("a.referencia, a.descripcion, atr.barcode, atr.talla, a.codgrupomoda, a.codtemporada, a.anno")
+                q.setFrom("atributosarticulos atr INNER JOIN stocks s ON atr.barcode = s.barcode INNER JOIN articulos a ON atr.referencia = a.referencia")
+                q.setWhere("s.codalmacen IN ('" + listaOutlet + "') AND a.sevende = TRUE AND s.disponible > 0 GROUP BY a.referencia,atr.barcode,atr.talla,a.codgrupomoda,a.codtemporada,a.anno ORDER BY a.referencia,atr.barcode,atr.talla,a.codgrupomoda,a.codtemporada,a.anno")
+
+                if not q.exec_():
+                    error = "<articulos><error>Falló la consulta.</error></articulos>"
+                    return error
+
+                response = ET.Element("articulos")
+                while q.next():
+                    ET.SubElement(response, "referencia").text = q.value("a.referencia")
+                    ET.SubElement(response, "descripcion").text = q.value("a.descripcion")
+                    ET.SubElement(response, "barcode").text = q.value("atr.barcode")
+                    ET.SubElement(response, "talla").text = q.value("atr.talla")
+                    ET.SubElement(response, "grupomoda").text = q.value("a.codgrupomoda")
+                    ET.SubElement(response, "temporada").text = q.value("a.codtemporada")
+                    ET.SubElement(response, "anno").text = q.value("a.anno")
+
+                resXml = tostring(response, 'utf-8', method="xml").decode("ISO8859-15")
+                resXml = resXml.replace("'", "\\'")
+                return resXml
+        except Exception as e:
+            error = "<articulos><error>Error: " + str(e) + "</error></articulos>"
+            return error
+
+        return ""
 
     def elganso_idl_crearespuesta(self, error, precio, stock, barcode, codTienda):
         response = ET.Element("articulo")
@@ -77,8 +123,11 @@ class elganso_idl(flfactalma):
     def __init__(self, context=None):
         super().__init__(context)
 
-    def dameprecioarticulo(self, params):
-        return self.ctx.elganso_idl_dameprecioarticulo(params)
+    def damedatosarticulo(self, params):
+        return self.ctx.elganso_idl_damedatosarticulo(params)
+
+    def damearticulos(self, params):
+        return self.ctx.elganso_idl_damearticulos(params)
 
     def crearespuesta(self, error, precio, stock, barcode, codTienda):
         return self.ctx.elganso_idl_crearespuesta(error, precio, stock, barcode, codTienda)

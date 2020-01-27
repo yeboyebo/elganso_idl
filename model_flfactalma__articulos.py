@@ -7,6 +7,10 @@ class elganso_idl_articulos(flfactalma_articulos, helpers.MixinConAcciones):
         proxy = True
 
     @helpers.decoradores.csr()
-    def dameprecioarticulo(params):
-        return form.iface.dameprecioarticulo(params)
+    def damedatosarticulo(params):
+        return form.iface.damedatosarticulo(params)
+
+    @helpers.decoradores.csr()
+    def damearticulos(params):
+        return form.iface.damearticulos(params)
 
