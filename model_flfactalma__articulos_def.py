@@ -89,13 +89,14 @@ class elganso_idl(flfactalma):
 
                 response = ET.Element("articulos")
                 while q.next():
-                    ET.SubElement(response, "referencia").text = q.value("a.referencia")
-                    ET.SubElement(response, "descripcion").text = q.value("a.descripcion")
-                    ET.SubElement(response, "barcode").text = q.value("atr.barcode")
-                    ET.SubElement(response, "talla").text = q.value("atr.talla")
-                    ET.SubElement(response, "grupomoda").text = q.value("a.codgrupomoda")
-                    ET.SubElement(response, "temporada").text = q.value("a.codtemporada")
-                    ET.SubElement(response, "anno").text = q.value("a.anno")
+                    articulo = ET.SubElement(response, "articulo")
+                    ET.SubElement(articulo, "referencia").text = q.value("a.referencia")
+                    ET.SubElement(articulo, "descripcion").text = q.value("a.descripcion")
+                    ET.SubElement(articulo, "barcode").text = q.value("atr.barcode")
+                    ET.SubElement(articulo, "talla").text = q.value("atr.talla")
+                    ET.SubElement(articulo, "grupomoda").text = q.value("a.codgrupomoda")
+                    ET.SubElement(articulo, "temporada").text = q.value("a.codtemporada")
+                    ET.SubElement(articulo, "anno").text = q.value("a.anno")
 
                 resXml = tostring(response, 'utf-8', method="xml").decode("ISO8859-15")
                 resXml = resXml.replace("'", "\\'")
