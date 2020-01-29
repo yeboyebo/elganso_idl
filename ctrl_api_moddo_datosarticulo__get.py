@@ -16,7 +16,6 @@ class moddo_datosarticulo(interna_get):
     @staticmethod
     def start(pk, data):
         params = {}
-        print(data)
         params["key"] = data["HEADER"]["HTTP_KEY"]
         params["barcode"] = data["barcode"]
         params["tienda"] = data["tienda"]
