@@ -2,6 +2,15 @@
     "modifications": [
         {
             "type": "insertAfterNode",
+            "path": "/portal",
+            "value": {
+                "api": {
+                    "controller": true
+                }
+            }
+        },
+        {
+            "type": "insertAfterNode",
             "path": "/models/flfact_tpv/tpv_vales",
             "value": {
                 "tpv_viajesmultitransstock": null

@@ -4,6 +4,10 @@
             {
                 "path": "config/",
                 "name": "dependencias.json"
+            },
+            {
+                "name": "settings.py",
+                "path": "AQNEXT/"
             }
         ],
         "patchJson": [
@@ -123,6 +127,14 @@
             {
                 "path": "models/flfactppal/",
                 "name": "model_flfactppal__idl_ajustesstock_def.py"
+            },
+            {
+                "name": "ctrl_api_moddo_articulos__get.py",
+                "path": "controllers/api/moddo/articulos/"
+            },
+            {
+                "name": "ctrl_api_moddo_datosarticulo__get.py",
+                "path": "controllers/api/moddo/datosarticulo/"
             }
         ]
     },
