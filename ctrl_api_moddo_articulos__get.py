@@ -15,9 +15,9 @@ class moddo_articulos(interna_get):
 
     @staticmethod
     def start(pk, data):
-        params = {}
-        params["key"] = data["HEADER"]["HTTP_KEY"]
-        response = articulos.damearticulos(params)
+        # params = {}
+        # params["key"] = data["key"]
+        response = articulos.damearticulos(data)
         # print("_________________")
         # print(response)
         return HttpResponse(response, content_type="application/xml")

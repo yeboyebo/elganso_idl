@@ -15,11 +15,11 @@ class moddo_datosarticulo(interna_get):
 
     @staticmethod
     def start(pk, data):
-        params = {}
-        params["key"] = data["HEADER"]["HTTP_KEY"]
-        params["barcode"] = data["barcode"]
-        params["tienda"] = data["tienda"]
-        response = articulos.damedatosarticulo(params)
+        # params = {}
+        # params["key"] = data["Key"]
+        # params["barcode"] = data["barcode"]
+        # params["tienda"] = data["tienda"]
+        response = articulos.damedatosarticulo(data)
         # print("_________________")
         # print(response)
         return HttpResponse(response, content_type="application/xml")
