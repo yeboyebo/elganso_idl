@@ -19,44 +19,61 @@ class elganso_idl(flfactalma):
 
                 if not barcode or barcode == "":
                     error = "Barcode no encontrado"
-                    return self.iface.crearespuesta(error, precio, stock, barcode, codTienda)
+                    return self.iface.crearespuestadatosArticulo(error, precio, stock, barcode, codTienda)
 
                 referencia = qsatype.FLUtil.sqlSelect("atributosarticulos", "referencia", "barcode = '" + barcode + "'")
                 if not referencia or referencia == "":
                     error = "Referencia no encontrada"
-                    return self.iface.crearespuesta(error, precio, stock, barcode, codTienda)
+                    return self.iface.crearespuestadatosArticulo(error, precio, stock, barcode, codTienda)
 
                 if not codTienda or codTienda == "":
                     error = "Tienda no encontrada"
-                    return self.iface.crearespuesta(error, precio, stock, barcode, codTienda)
+                    return self.iface.crearespuestadatosArticulo(error, precio, stock, barcode, codTienda)
 
                 fecha = datetime.datetime.now().strftime("%d-%m-%Y")
                 idEmpresa = qsatype.FLUtil.sqlSelect(u"tpv_tiendas", u"idempresa", ustr(u"codtienda = '", codTienda, u"'"))
                 if not idEmpresa or idEmpresa == "" or idEmpresa == 0:
                     error = "Empresa no encontrada"
-                    return self.iface.crearespuesta(error, precio, stock, barcode, codTienda)
+                    return self.iface.crearespuestadatosArticulo(error, precio, stock, barcode, codTienda)
 
                 precio = str(qsatype.FactoriaModulos.get('formRecordlineaspedidoscli').iface.pub_damePrecioArticulo(referencia, fecha, idEmpresa, codTienda, ""))
                 if not precio or precio == "":
                     error = "Precio no encontrado"
-                    return self.iface.crearespuesta(error, precio, stock, barcode, codTienda)
+                    return self.iface.crearespuestadatosArticulo(error, precio, stock, barcode, codTienda)
 
                 codAlmacen = qsatype.FLUtil.sqlSelect("tpv_tiendas", "codalmacen", "codtienda = '" + codTienda + "'")
                 if not codAlmacen or codAlmacen == "":
                     error = "Almacén no encontrado"
-                    return self.iface.crearespuesta(error, precio, stock, barcode, codTienda)
+                    return self.iface.crearespuestadatosArticulo(error, precio, stock, barcode, codTienda)
 
                 stock = str(qsatype.FLUtil.sqlSelect("stocks", "disponible", "barcode = '" + barcode + "' AND codalmacen = '" + codAlmacen + "'"))
                 if not stock or stock == "" or stock == "None":
                     stock = "0"
             else:
                 error = "No se encontró la key"
-                return self.iface.crearespuesta(error, precio, stock, barcode, codTienda)
+                return self.iface.crearespuestadatosArticulo(error, precio, stock, barcode, codTienda)
 
         except Exception as e:
             error = "Error: " + str(e)
 
-        return self.iface.crearespuesta(error, precio, stock, barcode, codTienda)
+        return self.iface.crearespuestadatosArticulo(error, precio, stock, barcode, codTienda)
+
+    def elganso_idl_crearespuestadatosArticulo(self, error, precio, stock, barcode, codTienda):
+        response = ET.Element("articulo")
+
+        ET.SubElement(response, "barcode").text = barcode
+        ET.SubElement(response, "tienda").text = codTienda
+
+        if error and error != "":
+            ET.SubElement(response, "error").text = error
+        else:
+            ET.SubElement(response, "precio").text = precio
+            ET.SubElement(response, "stock").text = stock
+
+        xmlstring = tostring(response, encoding='unicode')
+        xmlstring = xmlstring.replace("'", "\\'")
+
+        return "<?xml version='1.0' encoding='UTF-8'?>" + xmlstring
 
     def elganso_idl_damearticulos(self, params):
         error = ""
@@ -110,19 +127,64 @@ class elganso_idl(flfactalma):
 
         return ""
 
-    def elganso_idl_crearespuesta(self, error, precio, stock, barcode, codTienda):
-        response = ET.Element("articulo")
+    def elganso_idl_damedatosarticuloporalmacen(self, params):
+        error = ""
+        precio = ""
+        codTienda = ""
+        try:
+            if "key" in params and params['key'] == "34762d577d2c6132417e5e5e2f":
+                codTienda = params['tienda']
+                if not codTienda or codTienda == "":
+                    error = "Tienda no encontrada"
+                    return "<?xml version='1.0' encoding='UTF-8'?><articulos><error>" + error + "</error></articulos>"
 
-        ET.SubElement(response, "barcode").text = barcode
-        ET.SubElement(response, "tienda").text = codTienda
-        ET.SubElement(response, "error").text = error
-        ET.SubElement(response, "precio").text = precio
-        ET.SubElement(response, "stock").text = stock
+                codAlmacen = qsatype.FLUtil.sqlSelect("tpv_tiendas", "codalmacen", "codtienda = '" + codTienda + "'")
+                if not codAlmacen or codAlmacen == "":
+                    error = "Almacén no encontrado"
+                    return "<?xml version='1.0' encoding='UTF-8'?><articulos><error>" + error + "</error></articulos>"
 
-        xmlstring = tostring(response, encoding='unicode')
-        xmlstring = xmlstring.replace("'", "\\'")
+                fecha = datetime.datetime.now().strftime("%d-%m-%Y")
+                idEmpresa = qsatype.FLUtil.sqlSelect(u"tpv_tiendas", u"idempresa", ustr(u"codtienda = '", codTienda, u"'"))
 
-        return "<?xml version='1.0' encoding='UTF-8'?>" + xmlstring
+                if not idEmpresa or idEmpresa == "" or idEmpresa == 0:
+                    error = "Empresa no encontrada"
+                    return "<?xml version='1.0' encoding='UTF-8'?><articulos><error>" + error + "</error></articulos>"
+
+                q = qsatype.FLSqlQuery()
+                q.setSelect("barcode, referencia, disponible")
+                q.setFrom("stocks")
+                q.setWhere("codalmacen = '" + codAlmacen + "' AND disponible > 0");
+
+                if not q.exec():
+                    error = "Error al obtener los articulos"
+                    return "<?xml version='1.0' encoding='UTF-8'?><articulos><error>" + error + "</error></articulos>"
+                response = ET.Element("articulos")
+                while q.next():
+                    articulo = ET.SubElement(response, "articulo")
+                    ET.SubElement(articulo, "tienda").text = codTienda
+                    ET.SubElement(articulo, "barcode").text = q.value("barcode")
+                    ET.SubElement(articulo, "stock").text = str(q.value("disponible"))
+
+                    referencia = q.value("referencia")
+                    precio = str(qsatype.FactoriaModulos.get('formRecordlineaspedidoscli').iface.pub_damePrecioArticulo(referencia, fecha, idEmpresa, codTienda, ""))
+
+                    if not precio or precio == "":
+                        error = "Precio no encontrado"
+                        return "<?xml version='1.0' encoding='UTF-8'?><articulos><error>" + error + "</error></articulos>"
+
+                    ET.SubElement(articulo, "precio").text = str(precio)
+            else:
+                error = "No se encontró la key"
+                return "<?xml version='1.0' encoding='UTF-8'?><articulos><error>" + error + "</error></articulos>"
+        except Exception as e:
+            error = "Error: " + str(e)
+            return "<?xml version='1.0' encoding='UTF-8'?><articulos><error>" + error + "</error></articulos>"
+
+        resXml = tostring(response, encoding='unicode')
+        resXml = resXml.replace("'", "\\'")
+
+        return "<?xml version='1.0' encoding='UTF-8'?>" + resXml
+
 
     def __init__(self, context=None):
         super().__init__(context)
@@ -130,9 +192,12 @@ class elganso_idl(flfactalma):
     def damedatosarticulo(self, params):
         return self.ctx.elganso_idl_damedatosarticulo(params)
 
+    def crearespuestadatosArticulo(self, error, precio, stock, barcode, codTienda):
+        return self.ctx.elganso_idl_crearespuestadatosArticulo(error, precio, stock, barcode, codTienda)
+
     def damearticulos(self, params):
         return self.ctx.elganso_idl_damearticulos(params)
 
-    def crearespuesta(self, error, precio, stock, barcode, codTienda):
-        return self.ctx.elganso_idl_crearespuesta(error, precio, stock, barcode, codTienda)
+    def damedatosarticuloporalmacen(self, params):
+        return self.ctx.elganso_idl_damedatosarticuloporalmacen(params)
 

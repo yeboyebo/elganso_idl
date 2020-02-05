@@ -14,3 +14,7 @@ class elganso_idl_articulos(flfactalma_articulos, helpers.MixinConAcciones):
     def damearticulos(params):
         return form.iface.damearticulos(params)
 
+    @helpers.decoradores.csr()
+    def damedatosarticuloporalmacen(params):
+        return form.iface.damedatosarticuloporalmacen(params)
+

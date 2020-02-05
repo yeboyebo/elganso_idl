@@ -135,6 +135,10 @@
             {
                 "name": "ctrl_api_moddo_datosarticulo__get.py",
                 "path": "controllers/api/moddo/datosarticulo/"
+            },
+            {
+                "name": "ctrl_api_moddo_datosarticuloporalmacen__get.py",
+                "path": "controllers/api/moddo/datosarticuloporalmacen/"
             }
         ]
     },
