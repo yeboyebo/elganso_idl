@@ -45,6 +45,10 @@ class elganso_idl(flfactalma):
                 if codTienda and codTienda != "None" and codTienda != "":
                     masWhere += " AND t.codtienda = '" + codTienda + "'"
 
+                if masWhere == "":
+                    error = "Error: Es necesario establecer al menos un parámetro (tienda o barcode)"
+                    return "<?xml version='1.0' encoding='UTF-8'?><articulos><error>" + error + "</error></articulos>"
+
                 print(masWhere)
                 q = qsatype.FLSqlQuery()
                 q.setSelect("s.barcode, s.referencia, s.disponible, t.codtienda, t.idempresa")
