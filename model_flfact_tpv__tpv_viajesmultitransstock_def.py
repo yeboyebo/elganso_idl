@@ -257,10 +257,12 @@ class elganso_idl(interna):
                                             # if doc[0:1] == "T":
                                             idDoc = qsatype.FLUtil.sqlSelect(u"tpv_comandas", u"idtpv_comanda", u"codigo = '" + codDoc + u"'")
                                             if not idDoc:
-                                                res[0] = "KO"
-                                                if res[1] != "":
-                                                    res[1] += " "
-                                                res[1] += "rub210: no se encontró el documento"
+                                            	idDoc = qsatype.FLUtil.sqlSelect(u"ew_devolucioneseciweb", u"codasociacion", u"codasociacion = '" + codDoc + u"'")
+                                            	if not idDoc:
+	                                                res[0] = "KO"
+	                                                if res[1] != "":
+	                                                    res[1] += " "
+	                                                res[1] += "rub210: no se encontró el documento"
                                             else:
                                                 for referemcias in root.findall('int53/rub110/rub310'):
                                                     barcode = referemcias.find("item_code").text

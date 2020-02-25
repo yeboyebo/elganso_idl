@@ -226,8 +226,11 @@ class elganso_idl(flfactalma):
 
                 q = qsatype.FLSqlQuery()
                 q.setSelect("s.barcode, s.referencia, s.disponible, t.codtienda")
-                q.setFrom("stocks s INNER JOIN almacenes alm ON s.codalmacen = alm.codalmacen INNER JOIN tpv_tiendas t ON t.codalmacen = alm.codalmacen ")
-                q.setWhere("s.codalmacen IN ('" + listaOutlet + "') AND s.disponible > 0 order by t.codtienda, s.barcode");
+                q.setFrom("stocks s INNER JOIN almacenes alm ON s.codalmacen = alm.codalmacen INNER JOIN tpv_tiendas t ON t.codalmacen = alm.codalmacen INNER JOIN articulos a on s.referencia = a.referencia")
+                q.setWhere("a.referencia NOT LIKE '0000ATEMP%' AND s.codalmacen IN ('" + listaOutlet + "') AND a.nostock = FALSE AND a.sevende = TRUE AND s.disponible > 0");
+                # q.setWhere("s.codalmacen IN ('" + listaOutlet + "') AND s.disponible > 0 order by t.codtienda, s.barcode");
+
+
 
                 if not q.exec():
                     error = "Error al obtener los articulos"
