@@ -127,7 +127,19 @@ class elganso_idl(flfactalma):
                     ET.SubElement(articulo, "cod_temporada").text = q.value("a.codtemporada")
                     ET.SubElement(articulo, "desc_temporada").text = q.value("t.descripcion")
                     ET.SubElement(articulo, "anno").text = q.value("a.anno")
-                    ET.SubElement(articulo, "urls_imagenes").text = q.value("url.urls")
+
+
+                    if q.value("url.urls") and q.value("url.urls") != "" and q.value("url.urls") != "None":
+                        urlList = q.value("url.urls").split(",")
+                        indice = 1
+                        for url in urlList:
+                            if indice == 1:
+                                ET.SubElement(articulo, "urls_imagenes").text = url
+                            else:
+                                ET.SubElement(articulo, "urls_imagenes" + str(indice)).text = url
+                            indice = indice + 1
+                    else:
+                        ET.SubElement(articulo, "urls_imagenes").text = ""
 
                 resXml = tostring(response, encoding='unicode')
                 resXml = resXml.replace("'", "\\'")
