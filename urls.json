@@ -85,6 +85,13 @@
             "value": {
                 "idl_ajustesstock": null
             }
+        },
+        {
+            "type": "insertAfterNode",
+            "path": "/models/flfactppal/idl_ajustesstock",
+            "value": {
+                "eg_logpedidosweb": null
+            }
         }
     ]
 }

@@ -29,6 +29,26 @@
             {
                 "name": "model_flfactalma__articulos.py",
                 "path": "models/flfactalma/"
+            },
+            {
+                "name": "model_flfacturac__pedidoscli_def.py",
+                "path": "models/flfacturac/"
+            },
+            {
+                "name": "model_flfacturac__pedidoscli.py",
+                "path": "models/flfacturac/"
+            },
+            {
+                "name": "model_flfact_tpv__tpv_comandas.py",
+                "path": "models/flfact_tpv/"
+            },
+            {
+                "name": "model_flfact_tpv__tpv_comandas_def.py",
+                "path": "models/flfact_tpv/"
+            },
+            {
+                "name": "model_flfact_tpv__tpv_finventa_def.py",
+                "path": "models/flfact_tpv/"
             }
         ],
         "addFile": [
@@ -147,6 +167,14 @@
             {
                 "name": "ctrl_api_moddo_datostiendas__get.py",
                 "path": "controllers/api/moddo/datostiendas/"
+            },
+            {
+                "name": "model_flfactppal__eg_logpedidosweb.py",
+                "path": "models/flfactppal/"
+            },
+            {
+                "name": "model_flfactppal__eg_logpedidosweb_def.py",
+                "path": "models/flfactppal/"
             }
         ]
     },
