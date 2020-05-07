@@ -7,7 +7,7 @@ class elganso_idl_tpv_comandas(interna_tpv_comandas, helpers.MixinConAcciones):
         proxy = True
 
     @helpers.decoradores.csr()
-    def guardaDatosPedidoMagento(params):
+    def guardadatospedidomagento(params):
         print(params)
-        return form.iface.guardaDatosPedidoMagento(params)
+        return form.iface.guardadatospedidomagento(params)
 

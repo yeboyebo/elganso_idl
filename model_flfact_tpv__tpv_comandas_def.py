@@ -2,7 +2,7 @@
 # @class_declaration elganso_idl #
 class elganso_idl(interna):
 
-    def elganso_idl_guardaDatosPedidoMagento(self, params):
+    def elganso_idl_guardadatospedidomagento(self, params):
         incrementId = ""
         status = ""
         json = ""
@@ -57,6 +57,6 @@ class elganso_idl(interna):
         super().__init__(context)
 
 
-    def guardaDatosPedidoMagento(self, params):
-        return self.ctx.elganso_idl_guardaDatosPedidoMagento(params)
+    def guardadatospedidomagento(self, params):
+        return self.ctx.elganso_idl_guardadatospedidomagento(params)
 
