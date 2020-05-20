@@ -9,7 +9,6 @@ class elganso_idl(interna):
 
         try:
             if "key" in params and params['key'] == "34762d577d2c6132417e5e5e2f":
-                print("entra key " + str(params['key']))
 
                 if "json" in params:
                     json = params['json']
