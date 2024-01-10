@@ -175,6 +175,18 @@
             {
                 "name": "model_flfactppal__eg_logpedidosweb_def.py",
                 "path": "models/flfactppal/"
+            },
+            {
+                "name": "ctrl_api_mrw_mrwenvio__get.py",
+                "path": "controllers/api/mrw/mrwenvio/"
+            },
+            {
+                "name": "ctrl_api_gls_glsenvio__get.py",
+                "path": "controllers/api/gls/glsenvio/"
+            },
+            {
+                "name": "ctrl_api_ups_upsenvio__get.py",
+                "path": "controllers/api/ups/upsenvio/"
             }
         ]
     },
