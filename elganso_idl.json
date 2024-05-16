@@ -187,6 +187,22 @@
             {
                 "name": "ctrl_api_ups_upsenvio__get.py",
                 "path": "controllers/api/ups/upsenvio/"
+            },
+            {
+                "name": "model_flfact_tpv__eg_seguimientoenvios.py",
+                "path": "models/flfact_tpv/"
+            },
+            {
+                "name": "model_flfact_tpv__eg_seguimientoenvios_def.py",
+                "path": "models/flfact_tpv/"
+            },
+            {
+                "name": "model_flfact_tpv__eg_referenciastransportista.py",
+                "path": "models/flfact_tpv/"
+            },
+            {
+                "name": "model_flfact_tpv__eg_referenciastransportista_def.py",
+                "path": "models/flfact_tpv/"
             }
         ]
     },

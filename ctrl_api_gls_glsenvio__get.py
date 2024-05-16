@@ -11,6 +11,8 @@ from django.http import HttpResponse
 
 import xmltodict
 
+from YBLEGACY import qsatype
+
 # @class_declaration interna_revoke #
 class interna_get():
     pass
@@ -21,6 +23,7 @@ class gls_postenviogls(interna_get):
 
     @staticmethod
     def start(self, data):
+
         payload = "<?xml version=\"1.0\" encoding=\"utf-8\"?><soap12:Envelope xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xmlns:xsd=\"http://www.w3.org/2001/XMLSchema\" xmlns:soap12=\"http://www.w3.org/2003/05/soap-envelope\"><soap12:Body><GrabaServicios xmlns=\"http://www.asmred.com/\"><docIn><Servicios uidcliente=\"50914998-a78e-44ca-baba-230d03cde8ef\"><Recogida codrecogida=\"\"><Horarios><Fecha dia=\"" + data["DatosServicio_Fecha"] + "\"><Horario desde=\"10:00\" hasta=\"19:00\"/></Fecha></Horarios><RecogerEn><Nombre>" + data["DatosRecogida_Nombre"] + "</Nombre><Contacto>" + data["DatosRecogida_Contacto"] + "</Contacto><Direccion>" + data["DatosRecogida_Direccion"] + "</Direccion><Poblacion>" + data["DatosRecogida_Poblacion"] + "</Poblacion><Provincia>" + data["DatosRecogida_Provincia"] + "</Provincia><Pais>" + data["DatosRecogida_Pais"] + "</Pais><CP>" + data["DatosRecogida_CodPostal"] + "</CP><NIF>" + data["DatosRecogida_CifNif"] + "</NIF><Telefono>" + data["DatosRecogida_Telefono"] + "</Telefono><Email>" + data["DatosRecogida_Email"] + "</Email><Movil/></RecogerEn><Entregas><Envio><FechaPrevistaEntrega/><Portes>P</Portes><Servicio>7</Servicio><Horario>3</Horario><PODObligatorio>N</PODObligatorio><Bultos>1</Bultos><Peso>1</Peso><Retorno>0</Retorno><Destinatario><Nombre>" + data["DatosRecogida_Nombre"] + "</Nombre><Direccion>" + data["DatosDestinatario_Direccion"] + "</Direccion><Poblacion>" + data["DatosDestinatario_Poblacion"] + "</Poblacion><Provincia>" + data["DatosDestinatario_Provincia"] + "</Provincia><Pais>" + data["DatosDestinatario_Pais"] + "</Pais><CP>" + data["DatosDestinatario_CodPostal"] + "</CP><Telefono>" + data["DatosDestinatario_Telefono"] + "</Telefono><Movil/></Destinatario><Importes><Reembolso>0</Reembolso></Importes></Envio> </Entregas><Referencias><Referencia tipo=\"C\">" + data["DatosCodigoOperacion"] + "</Referencia> </Referencias></Recogida><Plataforma>API</Plataforma></Servicios></docIn></GrabaServicios></soap12:Body></soap12:Envelope>"
         print(str(payload))
 
@@ -44,6 +47,9 @@ class gls_postenviogls(interna_get):
                 for erroresRespuesta in codigoRecogida.findall('Errores'):
                     error_respuesta = str(erroresRespuesta[0].text) 
                    
+        if not qsatype.FLUtil.sqlInsert("eg_referenciastransportista", ["codpedido", "codreferencia", "transportista"], [str(data["DatosCodPedido"]), codigo_recogida, "GLS"]):
+            return False
+
         print(codigo_recogida)
         print(error_respuesta)
         if codigo_recogida == "":

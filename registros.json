@@ -40,6 +40,13 @@
         },
         {
             "type": "insertAfterNode",
+            "path": "/flfact_tpv/idl_ecommercedevoluciones",
+            "value": {
+                "eg_referenciastransportista": null
+            }
+        },
+        {
+            "type": "insertAfterNode",
             "path": "/flfactppal/usuarios",
             "value": {
                 "idl_recepciones": null

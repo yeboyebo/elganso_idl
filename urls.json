@@ -46,6 +46,13 @@
         },
         {
             "type": "insertAfterNode",
+            "path": "/models/flfact_tpv/idl_ecommercedevoluciones",
+            "value": {
+                "eg_referenciastransportista": null
+            }
+        },
+        {
+            "type": "insertAfterNode",
             "path": "/models/flfactalma/lineasregstocks",
             "value": {
                 "atributosarticulos": null
