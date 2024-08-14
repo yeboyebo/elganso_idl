@@ -38,7 +38,8 @@ class gls_postenviogls(interna_get):
           'Content-Type': 'text/xml; charset=utf-8'
         }
 
-        wsdl = 'https://wsclientes.asmred.com/b2b.asmx?op=TestGrabaServicios'
+        #wsdl = 'https://wsclientes.asmred.com/b2b.asmx?op=TestGrabaServicios'
+        wsdl = 'https://wsclientes.asmred.com/b2b.asmx?op=GrabaServicios'
 
         r = requests.request("POST", wsdl, headers=headers, data=payload)
        
