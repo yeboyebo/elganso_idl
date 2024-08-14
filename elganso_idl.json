@@ -203,6 +203,14 @@
             {
                 "name": "model_flfact_tpv__eg_referenciastransportista_def.py",
                 "path": "models/flfact_tpv/"
+            },
+            {
+                "name": "ctrl_api_gls_glsenvio__get_new.py",
+                "path": "controllers/api/gls/glsenvio/"
+            },
+            {
+                "name": "ctrl_api_gls_glsenvio__get_envio.py",
+                "path": "controllers/api/gls/glsenvio/"
             }
         ]
     },

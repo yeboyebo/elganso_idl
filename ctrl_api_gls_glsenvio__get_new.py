@@ -22,10 +22,21 @@ class gls_postenviogls(interna_get):
 
     @staticmethod
     def start(self, data):
+        print("**************************** ea 0")
+        if "IdCliente" not in data:
+            data["IdCliente"] = "50914998-a78e-44ca-baba-230d03cde8ef"
 
-        payload = "<?xml version=\"1.0\" encoding=\"utf-8\"?><soap12:Envelope xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xmlns:xsd=\"http://www.w3.org/2001/XMLSchema\" xmlns:soap12=\"http://www.w3.org/2003/05/soap-envelope\"><soap12:Body><GrabaServicios xmlns=\"http://www.asmred.com/\"><docIn><Servicios uidcliente=\"50914998-a78e-44ca-baba-230d03cde8ef\"><Recogida codrecogida=\"\"><Horarios><Fecha dia=\"" + data["DatosServicio_Fecha"] + "\"><Horario desde=\"10:00\" hasta=\"19:00\"/></Fecha></Horarios><RecogerEn><Nombre>" + data["DatosRecogida_Nombre"] + "</Nombre><Contacto>" + data["DatosRecogida_Contacto"] + "</Contacto><Direccion>" + data["DatosRecogida_Direccion"] + "</Direccion><Poblacion>" + data["DatosRecogida_Poblacion"] + "</Poblacion><Provincia>" + data["DatosRecogida_Provincia"] + "</Provincia><Pais>" + data["DatosRecogida_Pais"] + "</Pais><CP>" + data["DatosRecogida_CodPostal"] + "</CP><NIF>" + data["DatosRecogida_CifNif"] + "</NIF><Telefono>" + data["DatosRecogida_Telefono"] + "</Telefono><Email>" + data["DatosRecogida_Email"] + "</Email><Movil/></RecogerEn><Entregas><Envio><FechaPrevistaEntrega/><Portes>P</Portes><Servicio>76</Servicio><Horario>3</Horario><PODObligatorio>N</PODObligatorio><Bultos>1</Bultos><Peso>1</Peso><Retorno>0</Retorno><Destinatario><Nombre>" + data["DatosDestinatario_Nombre"] + "</Nombre><Direccion>" + data["DatosDestinatario_Direccion"] + "</Direccion><Poblacion>" + data["DatosDestinatario_Poblacion"] + "</Poblacion><Provincia>" + data["DatosDestinatario_Provincia"] + "</Provincia><Pais>" + data["DatosDestinatario_Pais"] + "</Pais><CP>" + data["DatosDestinatario_CodPostal"] + "</CP><Telefono>" + data["DatosDestinatario_Telefono"] + "</Telefono><Movil/></Destinatario><Importes><Reembolso>0</Reembolso></Importes></Envio> </Entregas><Referencias><Referencia tipo=\"C\">" + data["DatosCodigoOperacion"] + "</Referencia> </Referencias></Recogida><Plataforma>API</Plataforma></Servicios></docIn></GrabaServicios></soap12:Body></soap12:Envelope>"
+        if "Servicio_GLS" not in data:
+            data["Servicio_GLS"] = "76"
+
+        if "Horario_GLS" not in data:
+            data["Horario_GLS"] = "3"
+
+        payload = "<?xml version=\"1.0\" encoding=\"utf-8\"?><soap12:Envelope xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xmlns:xsd=\"http://www.w3.org/2001/XMLSchema\" xmlns:soap12=\"http://www.w3.org/2003/05/soap-envelope\"><soap12:Body><GrabaServicios xmlns=\"http://www.asmred.com/\"><docIn><Servicios uidcliente=\"" + data["IdCliente"] + "\"><Recogida codrecogida=\"\"><Horarios><Fecha dia=\"" + data["DatosServicio_Fecha"] + "\"><Horario desde=\"10:00\" hasta=\"19:00\"/></Fecha></Horarios><RecogerEn><Nombre>" + data["DatosRecogida_Nombre"] + "</Nombre><Contacto>" + data["DatosRecogida_Contacto"] + "</Contacto><Direccion>" + data["DatosRecogida_Direccion"] + "</Direccion><Poblacion>" + data["DatosRecogida_Poblacion"] + "</Poblacion><Provincia>" + data["DatosRecogida_Provincia"] + "</Provincia><Pais>" + data["DatosRecogida_Pais"] + "</Pais><CP>" + data["DatosRecogida_CodPostal"] + "</CP><NIF>" + data["DatosRecogida_CifNif"] + "</NIF><Telefono>" + data["DatosRecogida_Telefono"] + "</Telefono><Email>" + data["DatosRecogida_Email"] + "</Email><Movil/></RecogerEn><Entregas><Envio><FechaPrevistaEntrega/><Portes>P</Portes><Servicio>" + data["Servicio_GLS"] + "</Servicio><Horario>" + data["Horario_GLS"] + "</Horario><PODObligatorio>N</PODObligatorio><Bultos>1</Bultos><Peso>1</Peso><Retorno>0</Retorno><Destinatario><Nombre>" + data["DatosDestinatario_Nombre"] + "</Nombre><Direccion>" + data["DatosDestinatario_Direccion"] + "</Direccion><Poblacion>" + data["DatosDestinatario_Poblacion"] + "</Poblacion><Provincia>" + data["DatosDestinatario_Provincia"] + "</Provincia><Pais>" + data["DatosDestinatario_Pais"] + "</Pais><CP>" + data["DatosDestinatario_CodPostal"] + "</CP><Telefono>" + data["DatosDestinatario_Telefono"] + "</Telefono><Movil/></Destinatario><Importes><Reembolso>0</Reembolso></Importes></Envio> </Entregas><Referencias><Referencia tipo=\"C\">" + data["DatosCodigoOperacion"] + "</Referencia> </Referencias></Recogida><Plataforma>API</Plataforma></Servicios></docIn></GrabaServicios></soap12:Body></soap12:Envelope>"
         print(str(payload))
-
+        #print("**************************** ea OK")
+        #return {"NumeroEnvio": "PRUEBA Numero Envio", "EtiquetaFile": "PRUEBA Etiqueta"}
+        
         headers = {
           'Content-Type': 'text/xml; charset=utf-8'
         }
@@ -47,8 +58,8 @@ class gls_postenviogls(interna_get):
                     error_respuesta = str(erroresRespuesta[0].text) 
 
 
-        print(codigo_recogida)
-        print(error_respuesta)
+        print("codigo recogida: " + codigo_recogida)
+        print("error recogida:"+ error_respuesta)
         if codigo_recogida == "":
             if error_respuesta == "Referencia cliente duplicada":
                 codigo_recogida = data["DatosCodigoOperacion"]
@@ -81,5 +92,5 @@ class gls_postenviogls(interna_get):
         return {"NumeroEnvio": codigo_recogida, "EtiquetaFile": str(etiPdf)[2:len(str(etiPdf))-1]}
 
 # @class_declaration revoke #
-class get(gls_postenviogls):
+class get_new(gls_postenviogls):
     pass
