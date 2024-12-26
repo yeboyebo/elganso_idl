@@ -211,6 +211,14 @@
             {
                 "name": "ctrl_api_gls_glsenvio__get_envio.py",
                 "path": "controllers/api/gls/glsenvio/"
+            },
+            {
+                "name": "ctrl_api_fidelizacion_creartarjetasfidelizacion__creatarjetafidelizacion.py",
+                "path": "controllers/api/fidelizacion/creartarjetasfidelizacion/"
+            },
+            {
+                "name": "ctrl_api_gls_glsenvio__get_etiqueta.py",
+                "path": "controllers/api/gls/glsenvio/"
             }
         ]
     },

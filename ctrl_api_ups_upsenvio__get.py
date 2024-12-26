@@ -4,6 +4,7 @@ import os
 import json
 
 import requests
+#import aspose.words as aw
 
 import xml.etree.cElementTree as ET
 from xml.etree.ElementTree import tostring
@@ -17,30 +18,33 @@ class interna_get():
 
 
 # @class_declaration flsyncppal_revoke #
-class gls_postenviogls(interna_get):
+class ups_postenvioups(interna_get):
 
-    @staticmethod
-    def getTockenUps(self, data):
-        url = "https://wwwcie.ups.com/security/v1/oauth/token"
+    def start(self, data):
+        url = data["Url_Token"]
+        client_id = data["Client_Id"]
+        client_secret = data["Client_Secret"]
+        merchant_id = data["Merchant_Id"]
+        accountName = "ACTURUS CAPITAL, S.L."
+        if data["DatosRecogida_Pais"] == "FR":
+            merchant_id = "R77R81"
+            accountName = "ACTURUS FRANCE SAS"
 
-        payload = {
-          "grant_type": "client_credentials"
-        }
+
+        payload = "grant_type=client_credentials"
 
         headers = {
-          "Content-Type": "application/x-www-form-urlencoded",
-          "x-merchant-id": "string"
+        'Content-Type': 'application/x-www-form-urlencoded',
+        'x-merchant-id': merchant_id
         }
 
-        response = requests.post(url, data=payload, headers=headers, auth=('<username>','<password>'))
+        response = requests.post(url, data=payload, headers=headers, auth=(client_id,client_secret))
 
-        data = response.json()
-        print(data)
+        r = response.json()
+        token_ups = ""
+        if "access_token" in r:
+            token_ups = r["access_token"]
 
-    @staticmethod
-    def start(self, data):
-        print(self.getTockenUps(data))
-        return True
         payload = {
           "ShipmentRequest": {
             "Request": {
@@ -51,94 +55,86 @@ class gls_postenviogls(interna_get):
               }
             },
             "Shipment": {
-              "Description": "Ship WS test",
+              "Description": "Ship WS",
               "Shipper": {
-                "Name": "ShipperName",
-                "AttentionName": "ShipperZs Attn Name",
-                "TaxIdentificationNumber": "123456",
+                "Name": accountName,
+                "AttentionName": "Logistica El Ganso",
+                "TaxIdentificationNumber": "",
                 "Phone": {
-                  "Number": "1115554758",
+                  "Number": "916326464",
                   "Extension": " "
                 },
-                "ShipperNumber": " ",
-                "FaxNumber": "8002222222",
+                "ShipperNumber": merchant_id,
+                "FaxNumber": "",
                 "Address": {
                   "AddressLine": [
-                    "2311 York Rd"
+                     data["DatosRecogida_Direccion"][0:35]
                   ],
-                  "City": "Timonium",
-                  "StateProvinceCode": "MD",
-                  "PostalCode": "21093",
-                  "CountryCode": "US"
+                  "City": data["DatosRecogida_Poblacion"],
+                  "StateProvinceCode": data["DatosRecogida_Provincia"],
+                  "PostalCode": data["DatosRecogida_CodPostal"],
+                  "CountryCode": data["DatosRecogida_Pais"]
                 }
               },
               "ShipTo": {
-                "Name": "Happy Dog Pet Supply",
-                "AttentionName": "1160b_74",
+                "Name": data["DatosDestinatario_Nombre"][0:35],
+                "AttentionName": data["DatosDestinatario_Nombre"][0:35],
                 "Phone": {
-                  "Number": "9225377171"
+                  "Number": data["DatosDestinatario_Telefono"]
                 },
                 "Address": {
                   "AddressLine": [
-                    "123 Main St"
+                    data["DatosDestinatario_Direccion"][0:35]
                   ],
-                  "City": "timonium",
-                  "StateProvinceCode": "MD",
-                  "PostalCode": "21030",
-                  "CountryCode": "US"
+                  "City": data["DatosDestinatario_Poblacion"],
+                  "StateProvinceCode": data["DatosDestinatario_Provincia"],
+                  "PostalCode": data["DatosDestinatario_CodPostal"],
+                  "CountryCode": data["DatosDestinatario_Pais"]
                 },
                 "Residential": " "
               },
               "ShipFrom": {
-                "Name": "T and T Designs",
-                "AttentionName": "1160b_74",
+                "Name": data["DatosRecogida_Nombre"],
+                "AttentionName": data["DatosRecogida_Contacto"],
                 "Phone": {
-                  "Number": "1234567890"
+                  "Number": data["DatosRecogida_Telefono"]
                 },
-                "FaxNumber": "1234567890",
+                "FaxNumber": "",
                 "Address": {
                   "AddressLine": [
-                    "2311 York Rd"
+                    data["DatosRecogida_Direccion"]
                   ],
-                  "City": "Alpharetta",
-                  "StateProvinceCode": "GA",
-                  "PostalCode": "30005",
-                  "CountryCode": "US"
+                  "City": data["DatosRecogida_Poblacion"],
+                  "StateProvinceCode": data["DatosRecogida_Provincia"],
+                  "PostalCode": data["DatosRecogida_CodPostal"],
+                  "CountryCode": data["DatosRecogida_Pais"]
                 }
               },
               "PaymentInformation": {
                 "ShipmentCharge": {
                   "Type": "01",
-                  "BillShipper": {
-                    "AccountNumber": " "
-                  }
+                  "BillShipper": {"AccountNumber": merchant_id}
                 }
               },
+              "ReferenceNumber": {
+                "Value": data["DatosCodigoOperacion"]
+              },
               "Service": {
-                "Code": "03",
-                "Description": "Express"
+                "Code": "65",
+                "Description": "UPS Saver"
               },
               "Package": {
                 "Description": " ",
                 "Packaging": {
                   "Code": "02",
-                  "Description": "Nails"
-                },
-                "Dimensions": {
-                  "UnitOfMeasurement": {
-                    "Code": "IN",
-                    "Description": "Inches"
-                  },
-                  "Length": "10",
-                  "Width": "30",
-                  "Height": "45"
+                  "Description": "Customer Supplied"
                 },
                 "PackageWeight": {
                   "UnitOfMeasurement": {
-                    "Code": "LBS",
-                    "Description": "Pounds"
+                    "Code": "KGS",
+                    "Description": ""
                   },
-                  "Weight": "5"
+                  "Weight": "1"
                 }
               }
             },
@@ -152,18 +148,66 @@ class gls_postenviogls(interna_get):
           }
         }
 
-    headers = {
-      "Content-Type": "application/json",
-      "transId": "string",
-      "transactionSrc": "testing",
-      "Authorization": "Bearer <YOUR_TOKEN_HERE>"
-    }
+        if data["DatosRecogida_Pais"] == "FR":
+            payload["ShipmentRequest"]["Shipment"]["PaymentInformation"] = {
+                "ShipmentCharge": {
+                    "Type": "01",
+                    "BillThirdParty": {
+                        "AccountNumber": data["Merchant_Id"],
+                        "Address":{
+                            "PostalCode":"28660",
+                            "CountryCode": "ES"
+                        }
+                    }
+                }
+            }
 
-    response = requests.post(url, json=payload, headers=headers, params=query)
+        aPaisesUE = ['AT','BE','BG','CZ','DE','DK','EE','FI','FR','GB','GG','GR','HR','HU','IE','IT','JE','LI','LT','LU','LV','MC','NL','NO','PL','PT','RO','SE','SI','SK','SM','ES']
 
-    data = response.json()
-    print(data)
+        for pais in aPaisesUE:
+            if data["DatosDestinatario_Pais"] == pais:
+                print(str(pais))
+                payload["ShipmentRequest"]["Shipment"]["Service"] = {
+                    "Code": "11",
+                    "Description": "UPS Standard"
+                }
+
+        print(str(json.dumps(payload)))
+
+        headers = {
+          "Content-Type": "application/json",
+          "transId": "string",
+          "transactionSrc": "testing",
+          "Authorization": "Bearer " + token_ups
+        }
+
+        url = data["Url_Etiqueta"]
+        response = requests.post(url, json=payload, headers=headers)
+        
+        cuerpo_etiqueta = ""
+        dataResponse = response.json()
+        print(str(response.text))
+        if "ShipmentResponse" in dataResponse:
+            if "ShipmentResults" in dataResponse["ShipmentResponse"]:
+                if "PackageResults" in dataResponse["ShipmentResponse"]["ShipmentResults"]:
+                    if "ShippingLabel" in dataResponse["ShipmentResponse"]["ShipmentResults"]["PackageResults"]:
+                        if "GraphicImage" in dataResponse["ShipmentResponse"]["ShipmentResults"]["PackageResults"]["ShippingLabel"]:
+                            cuerpo_etiqueta = dataResponse["ShipmentResponse"]["ShipmentResults"]["PackageResults"]["ShippingLabel"]["GraphicImage"] 
+        print(cuerpo_etiqueta)
+
+        if cuerpo_etiqueta == "":
+            return {"NumeroEnvio": "Error", "EtiquetaFile": str(response.text)}
+
+        codigo_recogida = data["DatosCodigoOperacion"]
+        print(str(codigo_recogida))
+        ruta = "/home/elganso/etiquetas/" + codigo_recogida + ".gif"
+        file_result = open(ruta, 'wb')    
+        file_result.write(b64decode(cuerpo_etiqueta, validate=True))
+        file_result.close()
+        os.system('sshpass -p "2de01ad4" scp ' + ruta + ' root@api.elganso.com:/mnt/imgamazon/')
+
+        return {"NumeroEnvio": codigo_recogida, "EtiquetaFile": str(cuerpo_etiqueta)}
 
 # @class_declaration revoke #
-class get(gls_postenviogls):
+class get(ups_postenvioups):
     pass
