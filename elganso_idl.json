@@ -219,6 +219,58 @@
             {
                 "name": "ctrl_api_gls_glsenvio__get_etiqueta.py",
                 "path": "controllers/api/gls/glsenvio/"
+            },
+            {
+                "name": "ctrl_api_fidelizacion_consultapuntos__consultapuntos.py",
+                "path": "controllers/api/fidelizacion/consultapuntos/"
+            },
+            {
+                "name": "ctrl_api_seur_seurenvio__get.py",
+                "path": "controllers/api/seur/seurenvio/"
+            },
+            {
+                "name": "ctrl_api_seur_seurenvio__get_envio.py",
+                "path": "controllers/api/seur/seurenvio/"
+            },
+            {
+                "name": "ctrl_api_logis_notificacionesentradas__notificacionesentradas.py",
+                "path": "controllers/api/logis/notificacionesentradas/"
+            },
+            {
+                "name": "ctrl_api_logis_notificacionesajustestocks__notificacionesajustestocks.py",
+                "path": "controllers/api/logis/notificacionesajustestocks/"
+            },
+            {
+                "name": "ctrl_api_logis_notificacionessalesorders__notificacionessalidas.py",
+                "path": "controllers/api/logis/notificacionessalesorders/"
+            },
+            {
+                "name": "ctrl_api_logis_notificacionessalesorders__notificacionessalesorders.py",
+                "path": "controllers/api/logis/notificacionessalesorders/"
+            },
+            {
+                "name": "ctrl_api_idl_carrierlabel__get.py",
+                "path": "controllers/api/idl/carrierlabel/"
+            },
+            {
+                "name": "ctrl_api_idl_carrierlabel__get_envio.py",
+                "path": "controllers/api/idl/carrierlabel/"
+            },
+            {
+                "name": "ctrl_api_idl_carrierlabel__get_envio_gls.py",
+                "path": "controllers/api/idl/carrierlabel/"
+            },
+            {
+                "name": "ctrl_api_idl_carrierlabel__get_envio_ups.py",
+                "path": "controllers/api/idl/carrierlabel/"
+            },
+            {
+                "name": "ctrl_api_idl_carrierlabel__get_envio_mrw.py",
+                "path": "controllers/api/idl/carrierlabel/"
+            },
+            {
+                "name": "ctrl_api_idl_carrierlabel__get_envio_seur.py",
+                "path": "controllers/api/idl/carrierlabel/"
             }
         ]
     },
