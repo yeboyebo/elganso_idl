@@ -56,7 +56,9 @@ class elganso_idl(interna):
                                 res[1] += " "
                             res[1] += "rub110: activity_code erroneo"
                         else:
-                            for articulos in root.findall('int52/rub110/rub210'):
+                            childGeneral = root.find('int52/rub110/rub210')
+                            doc = str(childGeneral.find("originator_reference").text)
+                            """for articulos in root.findall('int52/rub110/rub210'):
                                 barcode = str(articulos.find("item_code").text)
                                 if not barcode or barcode == "":
                                     res[0] = "KO"
@@ -147,7 +149,7 @@ class elganso_idl(interna):
                                             res[0] = "KO"
                                             if res[1] != "":
                                                 res[1] += " "
-                                            res[1] += "rub210: originator_reference ya se ha enviado anteriormente"
+                                            res[1] += "rub210: originator_reference ya se ha enviado anteriormente" """
                     else:
                         res[0] = "KO"
                         if res[1] != "":
@@ -174,6 +176,7 @@ class elganso_idl(interna):
         r110 = ET.SubElement(int52, "rub110")
         ET.SubElement(r110, "activity_code").text = "GNS"
         ET.SubElement(r110, "physical_depot_code").text = "GNS"
+        ET.SubElement(r110, "doc").text = doc
         ET.SubElement(r110, "status").text = res[0]
         error = ET.SubElement(r110, "error_descriptions")
         ET.SubElement(error, "error_description").text = res[1]
@@ -257,12 +260,12 @@ class elganso_idl(interna):
                                             # if doc[0:1] == "T":
                                             idDoc = qsatype.FLUtil.sqlSelect(u"tpv_comandas", u"idtpv_comanda", u"codigo = '" + codDoc + u"'")
                                             if not idDoc:
-                                            	idDoc = qsatype.FLUtil.sqlSelect(u"ew_devolucioneseciweb", u"codasociacion", u"codasociacion = '" + codDoc + u"'")
-                                            	if not idDoc:
-	                                                res[0] = "KO"
-	                                                if res[1] != "":
-	                                                    res[1] += " "
-	                                                res[1] += "rub210: no se encontró el documento"
+                                                idDoc = qsatype.FLUtil.sqlSelect(u"ew_devolucioneseciweb", u"codasociacion", u"codasociacion = '" + codDoc + u"'")
+                                                if not idDoc:
+                                                    res[0] = "KO"
+                                                    if res[1] != "":
+                                                        res[1] += " "
+                                                    res[1] += "rub210: no se encontró el documento"
                                             else:
                                                 for referemcias in root.findall('int53/rub110/rub310'):
                                                     barcode = referemcias.find("item_code").text
@@ -746,30 +749,37 @@ class elganso_idl(interna):
                                         res[1] += " "
                                     res[1] += "rub120: originator_reference no puede estar vacío"
                                 else:
-                                    barcode = str(articulos.find("item_code").text)
-                                    if not barcode or barcode == "":
+                                    existe_doc = qsatype.FLUtil.sqlSelect(u"idl_confirmacionfaltantes", u"documentos", u"documentos = '" + doc + u"'")
+                                    if existe_doc:
                                         res[0] = "KO"
                                         if res[1] != "":
                                             res[1] += " "
-                                        res[1] += "rub120: item_code no puede estar vacío"
+                                        res[1] += "rub120: ya se implementó el documento."
                                     else:
-                                        fin = len(doc)
-                                        codDoc = doc[1:fin]
-                                        # Pedidoscli
-                                        # if doc[0:1] == "T":
-                                        idDoc = qsatype.FLUtil.sqlSelect(u"tpv_comandas", u"idtpv_comanda", u"codigo = '" + codDoc + u"'")
-                                        if not idDoc:
+                                        barcode = str(articulos.find("item_code").text)
+                                        if not barcode or barcode == "":
                                             res[0] = "KO"
                                             if res[1] != "":
                                                 res[1] += " "
-                                            res[1] += "rub120: no se encontró el documento " + codDoc
+                                            res[1] += "rub120: item_code no puede estar vacío"
                                         else:
-                                            idfaltante = qsatype.FLUtil.sqlSelect("tpv_lineascomanda", "idtpv_linea", "barcode = '" + str(barcode) + "' and idtpv_comanda = " + str(idDoc))
-                                            if not idfaltante:
+                                            fin = len(doc)
+                                            codDoc = doc[1:fin]
+                                            # Pedidoscli
+                                            # if doc[0:1] == "T":
+                                            idDoc = qsatype.FLUtil.sqlSelect(u"tpv_comandas", u"idtpv_comanda", u"codigo = '" + codDoc + u"'")
+                                            if not idDoc:
                                                 res[0] = "KO"
                                                 if res[1] != "":
                                                     res[1] += " "
-                                                res[1] += "rub120: no se encontró el artículo en la venta"
+                                                res[1] += "rub120: no se encontró el documento " + codDoc
+                                            else:
+                                                idfaltante = qsatype.FLUtil.sqlSelect("tpv_lineascomanda", "idtpv_linea", "barcode = '" + str(barcode) + "' and idtpv_comanda = " + str(idDoc))
+                                                if not idfaltante:
+                                                    res[0] = "KO"
+                                                    if res[1] != "":
+                                                        res[1] += " "
+                                                    res[1] += "rub120: no se encontró el artículo en la venta"
                     else:
                         res[0] = "KO"
                         if res[1] != "":

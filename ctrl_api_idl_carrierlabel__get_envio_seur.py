@@ -21,9 +21,7 @@ class interna_get():
 class seur_postenvioseur(interna_get):
 
     def start(self, data):
-        print("entra en seur")
-        return True
-        """
+        
         #url = data["Url_Token"]
         url = "https://servicios.apipre.seur.io/pic_token"
         #client_id = data["Client_Id"]
@@ -51,6 +49,7 @@ class seur_postenvioseur(interna_get):
             token_seur = r["access_token"]
             token_type = r["token_type"]
         print(token_seur)
+        """
         dataEnvio = {
             'serviceCode': "031",
             'productCode': "002",
@@ -111,17 +110,19 @@ class seur_postenvioseur(interna_get):
         print(token_type + " " + token_seur)
         response = requests.post(url, headers=headers, json=dataEnvio)
         print(response.status_code)
-        print(response.json())
-        return True
+        print(str(response)
+        return True"""
         codRecogida = "047123000595220201228";
         url = "https://servicios.apiPRE.seur.io/pic/v1/labels?templateType=CUSTOM_REFERENCE&type=PDF&entity=SHIPMENTS&code=" + codRecogida
         data = {
-        "token": tokenType + " " + token,
+        "token": token_type + " " + token_seur,
         "shipmentCode": codRecogida,
-        "typeLabel": tipoEtiquetas
+        "typeLabel": "PDF"
         }
-
-        response = requests.post(url, data=payload)"""
+        print(url)
+        print(str(payload))
+        response = requests.post(url, data=payload)
+        print(str(response))
 
 # @class_declaration revoke #
 class get_envio_seur(seur_postenvioseur):

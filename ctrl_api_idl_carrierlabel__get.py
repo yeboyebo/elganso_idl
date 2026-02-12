@@ -323,7 +323,10 @@ class idl_carrierlabel(interna_get):
             "DatosDestinatario_Telefono": data["deliveryPhone"],
             "DatosServicio_Fecha": dt.date.today(),
             "DatosCodigoOperacion": "IDL" + codigo_pedido[4:] + codigo_pedido[:7],
-            "DatosCodPedido": codigo_pedido
+            "DatosCodPedido": codigo_pedido,
+            "ccc": datos_idl["nombre"],
+            "idNumber": datos_idl["nombre"],
+            "accountNumber": datos_idl["nombre"]
         }
         if str(data["pickupReturn"]).lower() == "true":
             datosEnvio = {

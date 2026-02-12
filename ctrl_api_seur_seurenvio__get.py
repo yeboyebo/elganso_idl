@@ -22,45 +22,61 @@ class seur_postenvioseur(interna_get):
 
     def start(self, dataws):
 
-        #url = data["Url_Token"]
-        url = "https://servicios.apipre.seur.io/pic_token"
-        #client_id = data["Client_Id"]
-        client_id = "801318b4"
-        client_secret = "b8ff0a3563b20754b12cef762db1495e"
-        #client_secret = data["Client_Secret"]
-        username = "XjfXpH3"
-        password = "2AuJ9QyvD09W"
+        url = dataws["Url_Token"]
+        print("URL PRE: " + str(url))
+        client_id = dataws["Client_Id"]
+        client_secret = dataws["Client_Secret"]
+        username = dataws["User_Name"]
+        password = dataws["Password"]
 
         payload = {
-            'grant_type': "client_credentials",
+            'grant_type': "password",
             'client_id': client_id,
-            'client_secret': client_secret
+            'client_secret': client_secret,
+            'username': username,
+            'password': password
         }
 
-        params = {
-            'modal': 'true'
+        headers = {
+          'Content-Type': 'application/x-www-form-urlencoded',
+            'Cookie': 'incap_ses_1777_2392811=kV4ReI/SrH2QcpgrmCypGPqejWkAAAAAdH37ZvKcVNh3tnX7N8RKdQ==; visid_incap_2392811=qKjeFPpyRNifBh2Q6ffYHgWd92gAAAAAQUIPAAAAAAAZGZ9Af8mxZkNW0WY0u+ej; 8a001cb98b95ca7ca8dee5d504821ceb=433f15149fb3e956ab217471b246a3fd; incap_ses_267_2392811=xz09Q7sUVEcYPLKTmpO0A62gjWkAAAAADUbzjYRVNEi0oil0cWyE7Q==; visid_incap_2392811=fGlA8qiqT0iXAytTvbyxmxAZ1WgAAAAAQUIPAAAAAADwQyK2btWKHwozntb2B4Y5; 8a001cb98b95ca7ca8dee5d504821ceb=433f15149fb3e956ab217471b246a3fd'
         }
 
-        response = requests.post(url, data=payload)
-       
+        response = requests.post(url, headers=headers, data=payload)
+        print(response.text)
         r = response.json()
+
         token_seur = ""
+        token_type = ""
         if "access_token" in r:
             token_seur = r["access_token"]
             token_type = r["token_type"]
-        print(token_seur)
+
+        if not token_seur or token_seur == "":
+            return {"Error": "Error", "EtiquetaFile": "No se ha podido obtener etiqueta"}
+
         dataEnvio = {
-            'serviceCode': "031",
-            'productCode': "002",
+            'serviceCode': "31",
+            'productCode': "2",
             'customsGoodsCode': "C",
             'paymentType': "P",
+            "eti": False,
+            "eci": False,
+            "dSat": False,
             'sender': {
                 'name': dataws["sender_name"],
                 'ccc': dataws["ccc"],
-                'idNumber': dataws["idNumber"]
+                'idNumber': dataws["idNumber"],
+                "phone": "99999999",
+                "contactName": "ATT_CLIE_ORI",
+                "address":{
+                "streetName": "DIRE_ORI",
+                "postalCode": "19001",
+                "country": "ES",
+                "cityName": "GUADALAJARA"
+                }
             },
             'receiver': {
-                'accountNumber': dataws["accountNumber"],
                 'name': dataws["name"],
                 'idNumber': dataws["idNumber"],
                 'phone': dataws["phone"],
@@ -70,8 +86,7 @@ class seur_postenvioseur(interna_get):
                     'streetName': dataws["streetName"],
                     'cityName': dataws["cityName"],
                     'postalCode': dataws["postalCode"],
-                    'country': dataws["country"],
-                    'pickupCentreCode': dataws["pickupCentreCode"]
+                    'country': dataws["country"]
                 }
             },
             'date': dataws["date"],
@@ -87,18 +102,9 @@ class seur_postenvioseur(interna_get):
                 }
             ]
         }
-        print("Data envio" + str(dataEnvio))
         
-        url = "https://servicios.apipre.seur.io/pic/v1/shipments"
-
-        headers = {
-            'Content-Type': "application/json;charset=UTF-8",
-            'Authorization': token_type + " " + token_seur,
-            'grant_type': "client_credentials",
-            'client_id': client_id,
-            'client_secret': client_secret
-        }
-
+        url = dataws["Url_Shipment"]
+        print("URL SHIPMENT PRE: " + str(url))
 
         headers = {
             "Content-Type": "application/json;charset=UTF-8",
@@ -106,20 +112,42 @@ class seur_postenvioseur(interna_get):
             "Authorization": token_type + " " + token_seur
         }
 
-        print(token_type + " " + token_seur)
-        response = requests.post(url, headers=headers, json=dataEnvio)
-        print(response.status_code)
-        print(response.json())
-        return True"""
-        codRecogida = "047123000595220201228";
-        url = "https://servicios.apiPRE.seur.io/pic/v1/labels?templateType=CUSTOM_REFERENCE&type=PDF&entity=SHIPMENTS&code=" + codRecogida
-        data = {
-        "token": tokenType + " " + token,
-        "shipmentCode": codRecogida,
-        "typeLabel": tipoEtiquetas
-        }
 
-        response = requests.post(url, data=payload)"""
+        response = requests.post(url, headers=headers, json=dataEnvio)
+        print(response.text)
+        dataResponse = response.json()
+
+        if "data" in dataResponse:
+            print("entra")
+            if "shipmentCode" in dataResponse["data"]:
+                print(dataResponse["data"]["shipmentCode"])
+                codRecogida = str(dataResponse["data"]["shipmentCode"])
+                print("codRecogida: " + str(codRecogida))
+                url = "https://servicios.apipre.seur.io/pic/v1/labels?code=" + str(codRecogida) + "&type=PDF&entity=SHIPMENTS"
+
+                payload = {}
+                headers = {
+                    "Authorization": token_type + " " + token_seur,
+                    "shipmentCode": codRecogida,
+                    "typeLabel": "PDF"
+                }
+                response = requests.request("GET", url, headers=headers, data=payload)
+                print(response.text)
+                dataResponse = response.json()
+                if "data" in dataResponse:
+                    if "pdf" in dataResponse["data"][0]:
+                        ruta = codRecogida + ".pdf"
+                        file_result = open(ruta, 'wb')    
+                        file_result.write(b64decode(dataResponse["data"][0]["pdf"], validate=True))
+                        file_result.close()
+                        os.system('scp ' + ruta + ' root@api.elganso.com:/mnt/imgamazon/')
+                        return {"NumeroEnvio": codRecogida, "EtiquetaFile": str(dataResponse["data"][0]["pdf"])}
+        elif "errors" in dataResponse:
+            return {"Error": str(dataResponse["errors"][0]["status"]), "EtiquetaFile": str(dataResponse["errors"][0]["detail"])}
+        else:
+            return {"Error": "Error", "EtiquetaFile": "No se ha podido obtener etiqueta"}
+
+
 
 # @class_declaration revoke #
 class get(seur_postenvioseur):
